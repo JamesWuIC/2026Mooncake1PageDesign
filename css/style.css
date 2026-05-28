@@ -1,0 +1,6669 @@
+/*
+ * ════════════════════════════════════════════════════════════════
+ *  2026 中秋月餅禮盒 — 全站樣式表
+ *  style.css
+ *
+ *  目錄
+ *  ──────────────────────────────────────────
+ *  01. CSS 變數（色票）
+ *  02. 全域 Reset & 基礎設定
+ *  03. 捲軸樣式
+ *  04. 字型輔助類別（.en / .en-italic）
+ *  05. 公告列（Announcement Bar）
+ *  06. Hero_2 全幅主視覺圖
+ *  07. 裝飾元件（旋轉圓盤、浮動 Stat Card）
+ *  08. 跑馬燈（Marquee Strip）
+ *  09. Section 共用樣式
+ *  10. About 區段（CSS 已備，HTML 尚未加入）
+ *  11. Products 區段（含 6 格產品 Slider）
+ *  12. Features 區段（3 欄特色說明）
+ *  13. Gift 區段（CSS 已備，HTML 尚未加入）
+ *  14. Testimonials 區段（口碑評語）
+ *  15. Scroll Reveal 動畫
+ *  16. Toast 通知訊息
+ *  17. Hero_1 生肖轉盤遊戲
+ *  18. Hero_3 月餅圖片 Slider
+ *  19. RWD 響應式 ≤900px
+ *  20. RWD 響應式 ≤600px
+ *  21. RWD 響應式 ≤480px（極小螢幕）
+ *  22. 手機橫向模式（landscape）
+ * ════════════════════════════════════════════════════════════════
+ */
+
+/* ════════════════════════════════════════════════════════════════
+ * 01. CSS 變數（色票）— 全站唯一色彩管理中心
+ *
+ * ★ 修改方式：直接改 :root 內的值，全站顏色同步更新。
+ * ★ 色彩靈感：Hero_1 絲綢背景 — 深炭灰 × 暖金 × 絲銀中間色調。
+ *
+ * 分為四個色系：
+ *   🌕 金色系 Gold        → 按鈕、強調、線條、分隔符
+ *   ⬛ 深色系 Dark        → 暗色背景、最深標題文字
+ *   🩶 中性灰系 Silk-Grey → 正文、邊框、次要元件
+ *   🤍 亮色系 Cream/Light → 各 section 背景、卡片底色
+ * ════════════════════════════════════════════════════════════════ */
+:root {
+  /* ── 🌕 金色系 Gold Palette ──────────────────────────────────
+     主要強調色，全站按鈕、眉批、線條、分隔符均取此系列。
+     修改 --gold 即可同步更新所有金色元件。              */
+  --gold: #bea860; /* 主金色：按鈕、眉批線、轉盤按鈕 */
+  --gold-pale: #d8c898; /* 淡金：裝飾文字、icon、輔助用色 */
+  --gold-dim: #a08840; /* 暗金：hover 加深版、active 狀態 */
+  --gold-glow: rgba(190, 168, 96, 0.15); /* 金色光暈：overlay 或背景點綴 */
+
+  /* ── ⬛ 深色系 Dark Palette ──────────────────────────────────
+     暗色背景（公告列、跑馬燈）及最深色標題文字。
+     以絲綢炭黑為基調，帶微量暖棕調。                    */
+  --charcoal: #1c1814; /* 最深炭黑：marquee 背景、公告列底 */
+  --grey-ink: #2a2420; /* 近黑暖炭：主標題文字、toast 背景 */
+  --grey-deep: #46403a; /* 深暖灰：按鈕 hover、次深色底色 */
+
+  /* ── 🩶 中性灰系 Neutral Silk-Grey ──────────────────────────
+     正文文字、邊框、次要元件，帶暖調的絲綢銀為基礎。    */
+  --grey-dark: #857d74; /* 正文文字：body、卡片說明、次要文字 */
+  --grey-mid: #c4bfb8; /* 中灰：未選中 dot、輔助邊框 */
+  --grey-main: #DAD9D6; /* 統一淺灰：section 分隔線、卡片邊框 */
+
+  /* ── 🤍 亮色系 Light Palette ────────────────────────────────
+     各 section 背景、卡片底色，統一使用 #DAD9D6 淺灰色。   */
+  --white: #ffffff; /* 純白：卡片底色、info panel 背景 */
+  --off-white: #DAD9D6; /* 統一淺灰：testimonials、hero3 底色 */
+  --grey-bg: #DAD9D6; /* 統一淺灰：features、product slider 底 */
+  --cream: #DAD9D6; /* 統一淺灰：about 視覺區、gift 視覺區 */
+}
+
+/* ════════════════════════════════════════════════════════════════
+ * 02. 全域 Reset & 基礎設定
+ *
+ * box-sizing: border-box 讓 padding/border 不影響元素寬度計算。
+ * overflow-x: hidden 防止水平捲軸。
+ * ════════════════════════════════════════════════════════════════ */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth; /* 點擊錨點連結時平滑捲動 */
+}
+
+body {
+  font-family: "Noto Serif TC", serif;
+  background-color: var(--white);
+  color: var(--grey-dark);
+  overflow-x: hidden;
+  line-height: 1.7;
+  font-weight: 300;
+}
+
+/* ════════════════════════════════════════════════════════════════
+ * 03. 捲軸樣式（僅 WebKit / Blink 瀏覽器有效）
+ *
+ * 調整：改 width 可調粗細；改 background 可換顏色。
+ * ════════════════════════════════════════════════════════════════ */
+::-webkit-scrollbar {
+  width: 4px;
+}
+::-webkit-scrollbar-track {
+  background: var(--grey-bg);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--gold);
+}
+
+/* ════════════════════════════════════════════════════════════════
+ * 04. 字型輔助類別
+ *
+ * .en        → EB Garamond 正體，用於英文標題
+ * .en-italic → EB Garamond 斜體，用於副標、標籤文字
+ * 字型已在 HTML <head> 透過 Google Fonts 載入。
+ * ════════════════════════════════════════════════════════════════ */
+.en {
+  font-family: "EB Garamond", serif;
+  font-weight: 400;
+}
+.en-italic {
+  font-family: "EB Garamond", serif;
+  font-style: italic;
+  font-weight: 400;
+}
+
+/* ════════════════════════════════════════════════════════════════
+ * 05. 公告列（Announcement Bar）
+ *
+ * 目前在 HTML 中已以 <!-- --> 註解，需要時取消即可顯示。
+ * 調整：改 padding / font-size 控制高度與字級。
+ * ════════════════════════════════════════════════════════════════ */
+.announce-bar {
+  background: var(--charcoal);
+  color: var(--grey-main);
+  text-align: center;
+  padding: 9px 20px;
+  font-size: 11px;
+  letter-spacing: 3px;
+  font-family: "Noto Serif TC", serif;
+  font-weight: 300;
+}
+.announce-bar em {
+  font-style: normal;
+  color: var(--gold);
+  font-family: "Noto Serif TC", serif;
+  letter-spacing: 2px;
+}
+
+/* ════════════════════════════════════════════════════════════════
+ * 06. Hero_2 全幅主視覺圖（.hero）
+ *
+ * aspect-ratio: 16/9 維持固定比例；圖片以 object-fit: cover 填滿。
+ * 調整比例：改 aspect-ratio 數值（例如 21/9 更寬）。
+ * ════════════════════════════════════════════════════════════════ */
+.hero {
+  aspect-ratio: 16 / 9;
+  display: block;
+  width: 100%; /* 明確鎖定寬度，避免行動端 aspect-ratio + overflow:hidden 計算偏移 */
+  max-width: 100%;
+  padding: 0;
+  background: #000;
+  position: relative;
+  overflow: hidden;
+}
+.hero::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--grey-main);
+}
+
+/* 以下為 Hero 文字排版元件（目前 HTML 未使用，CSS 預留備用） */
+.hero-text {
+  position: relative;
+  z-index: 2;
+}
+.hero-eyebrow {
+  font-family: "Noto Serif TC", serif;
+  font-style: italic;
+  font-size: 13px;
+  color: var(--gold);
+  letter-spacing: 2px;
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.hero-eyebrow::before {
+  content: "";
+  display: inline-block;
+  width: 32px;
+  height: 1px;
+  background: var(--gold);
+}
+.hero-title {
+  font-family: "Noto Serif TC", serif;
+  font-size: clamp(44px, 5.5vw, 72px);
+  font-weight: 400;
+  color: var(--grey-ink);
+  line-height: 1.2;
+  letter-spacing: 3px;
+  margin-bottom: 10px;
+}
+.hero-title .year {
+  display: block;
+  font-family: "Noto Serif TC", serif;
+  font-size: clamp(72px, 10vw, 130px);
+  font-weight: 400;
+  color: var(--grey-main);
+  line-height: 0.9;
+  letter-spacing: -3px;
+  margin-bottom: 8px;
+}
+.hero-subtitle {
+  font-size: 11px;
+  color: var(--grey-dark);
+  letter-spacing: 4px;
+  margin-bottom: 36px;
+  font-weight: 300;
+}
+.hero-desc {
+  font-size: 13px;
+  color: var(--grey-dark);
+  line-height: 2;
+  max-width: 360px;
+  margin-bottom: 48px;
+  font-weight: 300;
+}
+.hero-actions {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+/* 按鈕樣式
+ * .btn-primary  → 深色填滿按鈕
+ * .btn-outline  → 邊框透明按鈕
+ * .btn-text     → 無框文字連結（帶箭頭）
+ * 調整：改 padding / letter-spacing 控制大小與字距 */
+.btn-primary {
+  background: var(--grey-ink);
+  color: var(--off-white);
+  padding: 13px 36px;
+  font-size: 10px;
+  letter-spacing: 4px;
+  border: none;
+  cursor: pointer;
+  font-family: "Noto Serif TC", serif;
+  font-weight: 300;
+  transition: all 0.3s;
+  text-decoration: none;
+  display: inline-block;
+}
+.btn-primary:hover {
+  background: var(--grey-deep);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+}
+.btn-outline {
+  border: 1px solid var(--grey-main);
+  color: var(--grey-dark);
+  padding: 13px 28px;
+  font-size: 10px;
+  letter-spacing: 3px;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+  transition: all 0.3s;
+  font-family: "Noto Serif TC", serif;
+  font-weight: 300;
+}
+.btn-outline:hover {
+  border-color: var(--gold);
+  color: var(--gold-dim);
+}
+.btn-text {
+  color: var(--grey-dark);
+  font-family: "Noto Serif TC", serif;
+  font-size: 14px;
+  letter-spacing: 1px;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition:
+    gap 0.3s,
+    color 0.3s;
+}
+.btn-text:hover {
+  gap: 14px;
+  color: var(--grey-ink);
+}
+.btn-text::after {
+  content: "→";
+}
+
+/* ════════════════════════════════════════════════════════════════
+ * 07. 裝飾元件（旋轉圓盤 + Stat 浮動卡片）
+ *
+ * 以下為 Hero_2 區段的輔助裝飾元件，目前 HTML 未使用，CSS 預留。
+ * 若未來要加入 Hero 文字排版版型可直接使用。
+ * ════════════════════════════════════════════════════════════════ */
+.hero-visual {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.disk-container {
+  position: relative;
+  width: 360px;
+  height: 360px;
+  flex-shrink: 0;
+}
+/* 外圓盤：conic-gradient 做出 12 等分交替條紋，持續旋轉 50s */
+.disk-outer {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: conic-gradient(
+    from 0deg,
+    #e8e8e7 0deg 30deg,
+    #d0d0cf 30deg 60deg,
+    #e8e8e7 60deg 90deg,
+    #d0d0cf 90deg 120deg,
+    #e8e8e7 120deg 150deg,
+    #d0d0cf 150deg 180deg,
+    #e8e8e7 180deg 210deg,
+    #d0d0cf 210deg 240deg,
+    #e8e8e7 240deg 270deg,
+    #d0d0cf 270deg 300deg,
+    #e8e8e7 300deg 330deg,
+    #d0d0cf 330deg 360deg
+  );
+  animation: diskRotate 50s linear infinite; /* 調整秒數改變旋轉速度 */
+  box-shadow:
+    0 12px 48px rgba(0, 0, 0, 0.08),
+    0 2px 8px rgba(0, 0, 0, 0.04);
+}
+/* 外環：反向旋轉 36s，速度差製造視差效果 */
+.disk-ring-outer {
+  position: absolute;
+  inset: 10px;
+  border-radius: 50%;
+  border: 1px solid rgba(190, 168, 96, 0.35);
+  animation: diskRotate 36s linear infinite reverse;
+}
+.disk-ring-mid {
+  position: absolute;
+  inset: 22px;
+  border-radius: 50%;
+  background: var(--grey-bg);
+  border: 1px solid rgba(190, 168, 96, 0.2);
+}
+.disk-pattern-layer {
+  position: absolute;
+  inset: 22px;
+  border-radius: 50%;
+  overflow: hidden;
+  animation: diskRotate 50s linear infinite;
+}
+/* 內圓：白色底，顯示中文與英文標籤 */
+.disk-inner {
+  position: absolute;
+  inset: 74px;
+  border-radius: 50%;
+  background: var(--white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  border: 1px solid var(--grey-main);
+  gap: 4px;
+}
+.disk-zh {
+  font-family: "Noto Serif TC", serif;
+  font-size: 22px;
+  font-weight: 400;
+  color: var(--grey-ink);
+  letter-spacing: 5px;
+  line-height: 1.3;
+  text-align: center;
+}
+.disk-en {
+  font-family: "Noto Serif TC", serif;
+  font-style: italic;
+  font-size: 10px;
+  letter-spacing: 4px;
+  color: var(--gold);
+  font-weight: 400;
+}
+/* 軌道繞行光點：4 個 gold 小圓點，每 22s 繞一圈
+ * 調整軌道半徑：改 translateX(138px) 數值（等於圓盤半徑） */
+.orbit {
+  position: absolute;
+  inset: 30px;
+  border-radius: 50%;
+  animation: diskRotate 22s linear infinite;
+}
+.orbit-dot {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  border-radius: 50%;
+  background: var(--gold);
+  transform-origin: 0 0;
+}
+.orbit-dot:nth-child(1) {
+  width: 6px;
+  height: 6px;
+  transform: rotate(0deg) translateX(138px) translate(-50%, -50%);
+}
+.orbit-dot:nth-child(2) {
+  width: 3px;
+  height: 3px;
+  transform: rotate(90deg) translateX(138px) translate(-50%, -50%);
+  opacity: 0.4;
+}
+.orbit-dot:nth-child(3) {
+  width: 6px;
+  height: 6px;
+  transform: rotate(180deg) translateX(138px) translate(-50%, -50%);
+}
+.orbit-dot:nth-child(4) {
+  width: 3px;
+  height: 3px;
+  transform: rotate(270deg) translateX(138px) translate(-50%, -50%);
+  opacity: 0.4;
+}
+
+/* 旋轉 keyframe，被 disk-outer / disk-ring-outer / disk-pattern-layer / orbit 共用 */
+@keyframes diskRotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* 浮動 Stat 資訊卡片（目前 HTML 未使用，預留）
+ * 調整位置：改 .stat-1 / .stat-2 的 top / bottom / left / right */
+.hero-stat {
+  position: absolute;
+  background: var(--white);
+  border: 1px solid var(--grey-main);
+  padding: 14px 18px;
+}
+.hero-stat-num {
+  font-family: "Noto Serif TC", serif;
+  font-size: 30px;
+  color: var(--gold);
+  line-height: 1;
+}
+.hero-stat-label {
+  font-size: 9px;
+  letter-spacing: 2px;
+  color: var(--grey-dark);
+  margin-top: 3px;
+  font-weight: 300;
+}
+.stat-1 {
+  bottom: 30px;
+  left: -10px;
+}
+.stat-2 {
+  top: 30px;
+  right: -10px;
+}
+
+/* ════════════════════════════════════════════════════════════════
+ * 08. 跑馬燈（Marquee Strip）
+ *
+ * 原理：文字內容複製一份（共 2 組），translateX(-50%) 回到起點，
+ *       製造無縫循環視覺效果。
+ * 調整速度：改 animation: marquee Xs 的秒數（越小越快）。
+ * 調整字距：改 .marquee-track span 的 margin 與 letter-spacing。
+ * ════════════════════════════════════════════════════════════════ */
+.marquee-strip {
+   
+  border-top: 1px solid rgba(190, 168, 96, 0.22);
+  border-bottom: 1px solid rgba(190, 168, 96, 0.22);
+  padding: 13px 0;
+  overflow: hidden;
+  white-space: nowrap;
+}
+.marquee-track {
+  display: inline-block;
+  animation: marquee 28s linear infinite; /* 28s 為一個循環 */
+}
+.marquee-track span {
+  color: var(--grey-mid);
+  font-family: "Noto Serif TC", serif;
+  font-size: 13px;
+  letter-spacing: 4px;
+  margin: 0 36px;
+}
+.marquee-track span.dot {
+  color: var(--gold);
+  font-size: 8px;
+  margin: 0 10px;
+  letter-spacing: 0;
+  vertical-align: middle;
+}
+.marquee-track span.zh {
+  font-family: "Noto Serif TC", serif;
+  font-weight: 300;
+  font-size: 11px;
+  letter-spacing: 3px;
+}
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  } /* -50% 因為內容複製兩份 */
+}
+
+/* ════════════════════════════════════════════════════════════════
+ * 09. Section 共用樣式
+ *
+ * 所有 <section> 預設 padding: 100px 80px。
+ * 個別區段如需不同 padding，用各自的 class 覆蓋。
+ * .section-eyebrow → 金色小標（帶左側短線）
+ * .section-title   → 主標題（clamp 自動縮放）
+ * .section-desc    → 說明段落
+ * .gold-line       → 40px 金色分隔線
+ * ════════════════════════════════════════════════════════════════ */
+section {
+  padding: 100px 80px;
+}
+.section-eyebrow {
+  font-family: "Noto Serif TC", serif;
+  font-style: italic;
+  font-size: 12px;
+  color: var(--gold);
+  letter-spacing: 3px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.section-eyebrow::before {
+  content: "";
+  width: 26px;
+  height: 1px;
+  background: var(--gold);
+  display: inline-block;
+  flex-shrink: 0;
+}
+.section-title {
+  font-family: "Noto Serif TC", serif;
+  font-size: clamp(26px, 3vw, 42px); /* 最小 26px，隨視窗縮放，最大 42px */
+  font-weight: 400;
+  color: var(--grey-ink);
+  line-height: 1.35;
+  letter-spacing: 3px;
+  margin-bottom: 20px;
+}
+.section-desc {
+  font-size: 13px;
+  color: var(--grey-dark);
+  line-height: 2;
+  max-width: 440px;
+  font-weight: 300;
+}
+.gold-line {
+  display: block;
+  width: 40px;
+  height: 1px;
+  background: var(--gold);
+  margin: 20px 0 28px;
+}
+
+/* ════════════════════════════════════════════════════════════════
+ * 10. About 區段（CSS 預留，HTML 待加入）
+ *
+ * 兩欄排版：左側視覺圖、右側特色列表。
+ * 若要啟用：在 HTML 加入 <section class="about"> 結構即可。
+ * ════════════════════════════════════════════════════════════════ */
+.about {
+  background: var(--off-white);
+  border-top: 1px solid var(--grey-main);
+  border-bottom: 1px solid var(--grey-main);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: center;
+}
+.about-visual {
+  position: relative;
+}
+.mooncake-svg-wrap {
+  width: 100%;
+  padding-bottom: 100%; /* 保持正方形比例 */
+  position: relative;
+  background: var(--cream);
+  overflow: hidden;
+}
+.mooncake-svg-wrap svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.about-features {
+  margin-top: 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+.about-feature-item {
+  display: flex;
+  gap: 18px;
+  align-items: flex-start;
+  padding-bottom: 22px;
+  border-bottom: 1px solid var(--grey-main);
+}
+.about-feature-item:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+.about-feature-num {
+  font-family: "Noto Serif TC", serif;
+  font-size: 32px;
+  color: var(--grey-main);
+  line-height: 1;
+  flex-shrink: 0;
+  width: 36px;
+  margin-top: -4px;
+}
+.about-feature-text h4 {
+  font-family: "Noto Serif TC", serif;
+  font-size: 14px;
+  color: var(--grey-ink);
+  font-weight: 400;
+  letter-spacing: 2px;
+  margin-bottom: 5px;
+}
+.about-feature-text p {
+  font-size: 12px;
+  color: var(--grey-dark);
+  font-weight: 300;
+  line-height: 1.8;
+}
+
+/* ════════════════════════════════════════════════════════════════
+ * 11. Products 區段（6 格產品 Slider）
+ *
+ * .products        → 外層容器，padding: 0（讓 slider 貼滿寬度）
+ * .products-header → 標題列，自有 padding
+ * .pslider-wrap    → Slider 外框，height 用 clamp 自動縮放
+ * .pslider-track   → 水平排列所有 slide，用 translateX 切換
+ * .pslide          → 單一 slide，左 60% 圖片、右 40% 文字
+ *
+ * 新增口味：在 HTML 複製一個 .pslide 結構，並把 pTotal 改為對應數量。
+ * 調整 Slider 高度：改 height: clamp(380px, 37.5vw, 720px) 三個數值。
+ * ════════════════════════════════════════════════════════════════ */
+.products {
+  background: var(--white);
+  padding: 0; /* 由 .products-header 自行控制 padding */
+}
+.products-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  padding: 80px 80px 56px;
+}
+.pslider-wrap {
+  position: relative;
+  width: 100%;
+  height: clamp(380px, 37.5vw, 720px); /* 最小 380px，最大 720px */
+  overflow: hidden;
+  background: var(--grey-bg);
+}
+.pslider-track {
+  display: flex;
+  height: 100%;
+  transition: transform 0.75s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
+}
+.pslide {
+  min-width: 100%;
+  height: 100%;
+  display: flex;
+}
+.pslide-img {
+  width: 60%;
+  height: 100%;
+  position: relative;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+.pslide-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.pslide-badge {
+  position: absolute;
+  top: 28px;
+  left: 28px;
+  background: var(--grey-ink);
+  color: var(--off-white);
+  font-family: "Noto Serif TC", serif;
+  font-size: 9px;
+  font-weight: 300;
+  letter-spacing: 2px;
+  padding: 4px 10px;
+  z-index: 2;
+}
+.pslide-info {
+  width: 40%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 60px 80px;
+  background: var(--white);
+  border-left: 1px solid var(--grey-main);
+  box-sizing: border-box;
+}
+.pslide-counter {
+  font-family: "Noto Serif TC", serif;
+  font-style: italic;
+  font-size: 11px;
+  color: var(--gold);
+  letter-spacing: 3px;
+  margin-bottom: 20px;
+}
+.product-flavor {
+  font-family: "Noto Serif TC", serif;
+  font-style: italic;
+  font-size: 11px;
+  letter-spacing: 2px;
+  color: var(--gold);
+  margin-bottom: 8px;
+}
+.product-name {
+  font-family: "Noto Serif TC", serif;
+  font-size: 20px;
+  color: var(--grey-ink);
+  font-weight: 400;
+  letter-spacing: 3px;
+  margin-bottom: 16px;
+  line-height: 1.4;
+}
+.product-desc {
+  font-size: 12px;
+  color: var(--grey-dark);
+  line-height: 2;
+  font-weight: 300;
+  margin-bottom: 32px;
+  max-width: 320px;
+}
+.product-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid var(--grey-main);
+  padding-top: 20px;
+}
+.product-price {
+  font-family: "Noto Serif TC", serif;
+  font-size: 28px;
+  color: var(--grey-dark);
+}
+.product-price small {
+  font-size: 11px;
+  color: var(--grey-main);
+  font-family: "Noto Serif TC", serif;
+  font-weight: 300;
+  margin-left: 4px;
+}
+/* 加入購物車按鈕：hover 時旋轉 90 度 */
+.product-add {
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--grey-main);
+  background: transparent;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--grey-dark);
+  font-size: 18px;
+  transition: all 0.3s;
+  line-height: 1;
+}
+.product-add:hover {
+  border-color: var(--gold);
+  color: var(--gold);
+  transform: rotate(90deg);
+}
+/* 左右箭頭按鈕
+ * .pslider-next 位於圖片右緣：left: calc(60% - 76px) */
+.pslider-prev,
+.pslider-next {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.14);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  color: var(--white);
+  width: 48px;
+  height: 48px;
+  cursor: pointer;
+  z-index: 10;
+  font-size: 18px;
+  font-family: "Noto Serif TC", serif;
+  transition:
+    background 0.25s,
+    border-color 0.25s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.pslider-prev {
+  left: 28px;
+}
+.pslider-next {
+  left: calc(60% - 76px);
+} /* 貼齊圖片右側 */
+.pslider-prev:hover,
+.pslider-next:hover {
+  background: rgba(255, 255, 255, 0.28);
+  border-color: var(--white);
+}
+/* 頁次圓點，位於圖片底部中央
+ * 調整位置：改 left 百分比（與圖片佔 60% 對應，故 left: 30%） */
+.pslider-dots {
+  position: absolute;
+  bottom: 24px;
+  left: 30%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+  z-index: 10;
+}
+.pdot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.4);
+  cursor: pointer;
+  transition:
+    background 0.3s,
+    transform 0.3s;
+  border: none;
+  padding: 0;
+}
+.pdot.active {
+  background: var(--white);
+  transform: scale(1.5);
+}
+
+/* ════════════════════════════════════════════════════════════════
+ * 12. Features 區段（3 欄特色說明）
+ *
+ * 兩欄：左側標題說明 + 右側 3 個特色項目。
+ * 新增特色：在 HTML 的 .features-grid 內複製一個 .feature-item。
+ * 調整欄數：改 .features-grid grid-template-columns。
+ * ════════════════════════════════════════════════════════════════ */
+.features {
+  background: var(--grey-bg);
+  border-top: 1px solid var(--grey-main);
+  border-bottom: 1px solid var(--grey-main);
+  padding: 80px;
+}
+.features-inner {
+  display: grid;
+  grid-template-columns: 1fr 2fr; /* 左 1/3 說明，右 2/3 特色格 */
+  gap: 80px;
+  align-items: start;
+}
+.features-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 40px;
+}
+.feature-num {
+  font-family: "Noto Serif TC", serif;
+  font-size: 48px;
+  color: var(--grey-main);
+  line-height: 1;
+  margin-bottom: 16px;
+}
+.feature-line {
+  width: 24px;
+  height: 1px;
+  background: var(--gold);
+  margin-bottom: 14px;
+}
+.feature-title {
+  font-family: "Noto Serif TC", serif;
+  font-size: 14px;
+  color: var(--grey-ink);
+  font-weight: 400;
+  letter-spacing: 2px;
+  margin-bottom: 10px;
+}
+.feature-desc {
+  font-size: 12px;
+  color: var(--grey-dark);
+  line-height: 1.9;
+  font-weight: 300;
+}
+
+/* ════════════════════════════════════════════════════════════════
+ * 13. Gift 區段（CSS 預留，HTML 待加入）
+ *
+ * 兩欄：左側視覺圖 + 右側禮盒說明文字。
+ * 若要啟用：在 HTML 加入 <section class="gift"> 結構即可。
+ * ════════════════════════════════════════════════════════════════ */
+.gift {
+  background: var(--white);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  padding: 0;
+  align-items: stretch;
+}
+.gift-visual {
+  background: var(--cream);
+  border-right: 1px solid var(--grey-main);
+  min-height: 560px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 60px;
+}
+.gift-text {
+  padding: 80px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border-top: 1px solid var(--grey-main);
+  border-bottom: 1px solid var(--grey-main);
+}
+.gift-list {
+  margin: 28px 0 40px;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.gift-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  font-size: 13px;
+  color: var(--grey-dark);
+  font-weight: 300;
+  line-height: 1.6;
+}
+.gift-list li::before {
+  content: "";
+  width: 22px;
+  height: 1px;
+  background: var(--gold);
+  flex-shrink: 0;
+  margin-top: 10px;
+}
+
+/* ════════════════════════════════════════════════════════════════
+ * 14. Testimonials 區段（口碑評語）
+ *
+ * 三欄等寬卡片，透過 gap:1px + background 做出 1px 分隔線效果。
+ * 新增評語：在 HTML 複製一個 .testimonial-card 結構，
+ *           並把 grid-template-columns 改為 repeat(4, 1fr)。
+ * ════════════════════════════════════════════════════════════════ */
+.testimonials {
+  background: var(--off-white);
+  border-top: 1px solid var(--grey-main);
+  text-align: center;
+}
+.testimonials .section-eyebrow {
+  justify-content: center;
+}
+.testimonials .section-eyebrow::before {
+  display: none; /* 置中時不需要左側短線 */
+}
+.testimonials .section-title {
+  text-align: center;
+}
+.testimonials-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--grey-main); /* gap 顯示為背景色，模擬格線 */
+  border: 1px solid var(--grey-main);
+  margin-top: 56px;
+}
+.testimonial-card {
+  background: var(--white);
+  padding: 40px 34px;
+  text-align: left;
+  transition: background 0.3s;
+}
+.testimonial-card:hover {
+  background: var(--off-white);
+}
+.testimonial-quote {
+  font-family: "Noto Serif TC", serif;
+  font-size: 52px;
+  color: var(--grey-main);
+  line-height: 1;
+  margin-bottom: 4px;
+  display: block;
+}
+.testimonial-text {
+  font-size: 13px;
+  color: var(--grey-dark);
+  line-height: 2;
+  font-weight: 300;
+  margin-bottom: 24px;
+  font-style: italic;
+  font-family: "Noto Serif TC", serif;
+}
+.testimonial-author {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.author-name {
+  font-family: "Noto Serif TC", serif;
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--grey-ink);
+  letter-spacing: 1px;
+}
+.author-date {
+  font-family: "Noto Serif TC", serif;
+  font-size: 11px;
+  color: var(--grey-main);
+  letter-spacing: 1px;
+}
+.stars {
+  color: var(--gold);
+  font-family: "Noto Serif TC", serif;
+  font-size: 12px;
+  letter-spacing: 3px;
+  margin-bottom: 14px;
+}
+
+/* ════════════════════════════════════════════════════════════════
+ * 15. Scroll Reveal 動畫
+ *
+ * 元素加上 .reveal 預設為透明 + 向下偏移 24px。
+ * JS (IntersectionObserver) 偵測進入視窗後加上 .visible 觸發動畫。
+ * .reveal-delay-1/2/3/4 → 依序延遲 0.1s 錯開出現時間。
+ * 調整：改 transition 秒數控制動畫速度；改 translateY 距離控制幅度。
+ * ════════════════════════════════════════════════════════════════ */
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition:
+    opacity 0.75s ease,
+    transform 0.75s ease;
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+.reveal-delay-1 {
+  transition-delay: 0.1s;
+}
+.reveal-delay-2 {
+  transition-delay: 0.2s;
+}
+.reveal-delay-3 {
+  transition-delay: 0.3s;
+}
+.reveal-delay-4 {
+  transition-delay: 0.4s;
+}
+
+/* ════════════════════════════════════════════════════════════════
+ * 16. Toast 通知訊息
+ *
+ * 固定在右下角。JS 加上 .show class 時出現，3 秒後自動消失。
+ * 調整位置：改 bottom / right 數值。
+ * ════════════════════════════════════════════════════════════════ */
+.toast {
+  position: fixed;
+  bottom: 32px;
+  right: 32px;
+  background: var(--grey-ink);
+  color: var(--grey-main);
+  padding: 13px 22px;
+  font-family: "Noto Serif TC", serif;
+  font-size: 13px;
+  letter-spacing: 2px;
+  z-index: 999;
+  transform: translateY(80px); /* 預設在畫面外（下方） */
+  opacity: 0;
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  pointer-events: none;
+  border-left: 2px solid var(--gold);
+}
+.toast.show {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+/* ════════════════════════════════════════════════════════════════
+ * 17. Hero_1 生肖轉盤遊戲（.plate-game）
+ *
+ * 整體佈局：flex 垂直排列，由上而下為：
+ *   .game-top-text   → 祝福文字列
+ *   .game-btns-row   → 兩顆按鈕
+ *   .game-main-row   → 三欄（生肖圖 | 轉盤 | 生肖大字）
+ *   .game-tagline    → 底部說明文字
+ *
+ * 背景圖片：background: url("images/01_hero/hero_1_hero-bg.jpg")
+ * 轉盤圖層：Layer1~5 堆疊，gL2 旋轉對應生肖，gL4 旋轉對應祝福。
+ * 圓心校正：#gL1~#gL5 的 transform-origin 已依圖片實際圓心微調，
+ *            若換圖需重新校正百分比。
+ *
+ * 調整轉盤大小：改 .disk-stack-container 的 clamp 數值。
+ * 調整生肖圖大小：改 .animal-img 的 clamp 數值。
+ * ════════════════════════════════════════════════════════════════ */
+.plate-game {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9; /* 與 Hero_2、Hero_3 統一比例 */
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-bottom: 1px solid var(--grey-mid);
+}
+.plate-game-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  z-index: 0;
+  pointer-events: none;
+}
+.plate-game > *:not(.plate-game-video) {
+  position: relative;
+  z-index: 1;
+}
+/* 頂部祝福文字（「祝福您屬 X 的朋友 X」） */
+.game-top-text {
+  text-align: center;
+  padding: 0.4vh 0 0;
+  font-family: "Noto Serif TC", serif;
+  font-size: clamp(12px, 1.3vw, 20px);
+  font-weight: 600;
+  color: var(--grey-dark);
+  letter-spacing: 0.2em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0 0.4em;
+  flex-shrink: 0;
+  text-shadow:
+    0 1px 4px rgba(0, 0, 0, 0.55),
+    0 2px 10px rgba(0, 0, 0, 0.28);
+}
+/* 生肖名稱與祝福詞的金色大字 */
+.gt-highlight {
+  font-size: clamp(20px, 2.4vw, 42px);
+  font-weight: 600;
+  color: var(--gold);
+  letter-spacing: 0.12em;
+  text-shadow:
+    0 1px 6px rgba(0, 0, 0, 0.65),
+    0 3px 14px rgba(0, 0, 0, 0.32);
+}
+/* 按鈕列 */
+.game-btns-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: clamp(12px, 2vw, 32px);
+  padding: clamp(4px, 0.5vh, 10px) 0 clamp(2px, 0.3vh, 6px);
+  flex-shrink: 0;
+}
+/* 金色動作按鈕 */
+.btn-game-action {
+  background: var(--gold);
+  border: none;
+  color: var(--grey-ink);
+  font-family: "Noto Serif TC", serif;
+  font-size: clamp(11px, 0.9vw, 14px);
+  font-weight: 400;
+  padding: clamp(10px, 1.1vh, 16px) clamp(22px, 2.4vw, 44px);
+  letter-spacing: 0.35em;
+  cursor: pointer;
+  transition:
+    background 0.22s,
+    box-shadow 0.22s;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+.btn-game-action:hover:not(:disabled) {
+  background: var(--gold-dim);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.14);
+}
+.btn-game-action:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+/* 頁面載入時的按鈕光暈動畫（引導使用者點擊） */
+@keyframes btnIntroGlow {
+  0% {
+    box-shadow: 0 0 0 0 rgba(190, 168, 96, 0);
+    background: var(--gold);
+    transform: scale(1);
+  }
+  25% {
+    box-shadow: 0 0 0 14px rgba(190, 168, 96, 0.5);
+    background: #d4bc6a;
+    transform: scale(1.06);
+  }
+  60% {
+    box-shadow: 0 0 0 8px rgba(190, 168, 96, 0.25);
+    background: #d4bc6a;
+    transform: scale(1.04);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(190, 168, 96, 0);
+    background: var(--gold);
+    transform: scale(1);
+  }
+}
+.btn-intro-glow {
+  animation: btnIntroGlow 0.65s ease-out forwards;
+}
+/* 三欄主視覺列（生肖圖 | 轉盤 | 文字）
+ * ⚠ 用 minmax(0, 1fr) 強制兩側欄位可以縮小於 content min-size，
+ *    避免 .animal-img 或 .zodiac-right 把 fr 撐大造成兩側不對稱、
+ *    讓轉盤視覺偏向某一邊（先前偏右 bug 的根因）。 */
+.game-main-row {
+  flex: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  min-height: 0;
+  width: 100%;
+}
+.disk-game-wrap {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  padding: 0.4vh 0;
+  position: relative;
+  z-index: 2;
+  /* 讓 disk-game-wrap 在 grid 中央 cell 內水平強制居中 */
+  justify-self: center;
+  align-self: center;
+}
+.disk-stack-container {
+  margin-left: auto;
+  margin-right: auto;
+}
+/* 轉盤堆疊容器：5 張圖片絕對定位疊合
+ * 再放大 35%：45vw → 60vw / 1064 → 1440 / 280 → 380（允許超出畫面）
+ * 居中由 .game-main-row 的 minmax(0, 1fr) 對稱欄位保證，
+ * 不再需要 translateX 補償。 */
+.disk-stack-container {
+  position: relative;
+  width: clamp(380px, 60vw, 1440px);
+  height: clamp(380px, 60vw, 1440px);
+}
+/* 每一層圖片：全部填滿容器，pointer-events:none 不攔截點擊 */
+.disk-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+  user-select: none;
+}
+/* 各圖層圓心微調（依圖片實際幾何中心設定 transform-origin）
+ * 若換圖請重新測量圓心位置後更新百分比 */
+#gL1 {
+  transform: translateY(1.5%);
+} /* 底座向下微移 */
+#gL2 {
+  transform-origin: 50% 52.7%;
+} /* 生肖外盤 */
+#gL3 {
+  transform-origin: 50.3% 52.75%;
+} /* 裝飾環 */
+#gL4 {
+  transform-origin: 50.4% 52.1%;
+} /* 祝福內盤 */
+#gL5 {
+  transform-origin: 50% 52.5%;
+} /* 最上層裝飾 */
+
+/* 兩側面板（生肖圖 + 生肖大字） */
+.side-panel {
+  height: 100%;
+  position: relative;
+  z-index: 1;
+}
+.panel-inner {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* CSS 預設入場動畫（ease-out 減速），JS 覆蓋為 ease-in 出場 */
+  transition:
+    transform 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.5s ease-out;
+}
+.side-panel-left .panel-inner {
+  justify-content: flex-end;
+}
+.side-panel-right .panel-inner {
+  justify-content: flex-start;
+}
+/* 出場狀態（JS 加上 .panel-out class 觸發） */
+.side-panel-left .panel-inner.panel-out {
+  transform: translateX(-115%);
+  opacity: 0;
+}
+.side-panel-right .panel-inner.panel-out {
+  transform: translateX(115%);
+  opacity: 0;
+}
+
+/* 生肖動物圖片
+ * 調整偏移量（向中央靠攏）：改 translateX 的 clamp 數值
+ * drop-shadow：兩層陰影製造遠近層次（PNG 透明背景需用 filter 而非 box-shadow） */
+.animal-img {
+  width: clamp(140px, 24vw, 580px);
+  height: clamp(140px, 24vw, 580px);
+  object-fit: contain;
+  display: block;
+  transform: translateX(clamp(15px, 3vw, 72px)); /* 往轉盤方向靠攏 */
+  filter:
+    drop-shadow(0 12px 32px rgba(0, 0, 0, 0.45))
+    drop-shadow(0 4px 10px rgba(0, 0, 0, 0.28));
+}
+/* 右側生肖大字（天干 + 動物字）
+ * 調整字級：改 .zodiac-stem / .zodiac-animal 的 clamp 數值 */
+.zodiac-right {
+  display: flex;
+  flex-direction: column;
+  line-height: 0.85;
+  position: relative;
+  transform: translateX(calc(-1 * clamp(15px, 3vw, 60px))); /* 往轉盤方向靠攏 */
+}
+.zodiac-stem {
+  font-family: "Noto Serif TC", serif;
+  font-weight: 400;
+  color: var(--gold);
+  font-size: clamp(50px, 13vw, 260px);
+  line-height: 0.88;
+  text-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.55),
+    0 4px 20px rgba(0, 0, 0, 0.3);
+}
+.zodiac-animal {
+  font-family: "Noto Serif TC", serif;
+  font-weight: 400;
+  color: var(--gold);
+  font-size: clamp(70px, 19vw, 380px);
+  line-height: 0.82;
+  text-shadow:
+    0 2px 10px rgba(0, 0, 0, 0.6),
+    0 5px 24px rgba(0, 0, 0, 0.32);
+}
+/* 右側直書英文（half opacity 裝飾） */
+.zodiac-large-en {
+  font-family: "Noto Serif TC", serif;
+  font-style: italic;
+  color: rgba(190, 168, 96, 0.42);
+  font-size: clamp(16px, 3.6vw, 72px);
+  writing-mode: vertical-rl;
+  position: absolute;
+  right: 6%;
+  top: 50%;
+  transform: translateY(-50%) rotate(180deg);
+  letter-spacing: 0.06em;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.45);
+}
+/* 底部說明文字 */
+.game-tagline {
+  text-align: center;
+  padding: 0.3vh 0 1vh;
+  flex-shrink: 0;
+  color: var(--gold);
+  font-size: 1.5vh;
+}
+.game-tagline p {
+  font-family: "Noto Serif TC", serif;
+  font-size: 1.5vh;
+  font-weight: 500;
+  color: var(--gold);
+  letter-spacing: 0.15em;
+  line-height: 2.2;
+}
+.game-tagline .tagline-en {
+  font-family: "Noto Serif TC", serif;
+  font-style: italic;
+  font-size: clamp(11px, 1.05vw, 16px);
+  letter-spacing: 0.08em;
+}
+
+/* ════════════════════════════════════════════════════════════════
+ * 18. Hero_3 月餅圖片 Slider（.hero3）
+ *
+ * 圖片以原始像素大小（480×480）居中顯示，不裁切不縮放。
+ * 手機版：螢幕 <600px 時改用 min(480px, 86vw) 自動縮小。
+ *
+ * 新增圖片：在 HTML 的 .h3slider-track 內加 .h3slide，
+ *           並把 script.js 的 h3Total 改為對應數量。
+ * 調整圖片大小：改 .h3slide img 的 width / height 數值。
+ * 調整上下留白：改 .h3slide 的 padding 數值。
+ * ════════════════════════════════════════════════════════════════ */
+.hero3 {
+  background: var(--off-white);
+  border-bottom: 1px solid var(--grey-main);
+  padding: 0;
+  overflow: hidden;
+}
+.h3slider-wrap {
+  position: relative;
+  overflow: hidden;
+}
+.h3slider-track {
+  display: flex;
+  transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
+}
+.h3slide {
+  min-width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 0; /* 上下留白，調整此值可改變圖片區高度 */
+  background: var(--off-white);
+}
+/* 圖片：固定原始尺寸 480×480，不使用 object-fit */
+.h3slide img {
+  display: block;
+  width: 480px;
+  height: 480px;
+  flex-shrink: 0;
+}
+/* 左右箭頭 */
+.h3slider-prev,
+.h3slider-next {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: var(--white);
+  border: 1px solid var(--grey-main);
+  color: var(--grey-dark);
+  width: 44px;
+  height: 44px;
+  cursor: pointer;
+  z-index: 10;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    border-color 0.25s,
+    color 0.25s;
+}
+.h3slider-prev {
+  left: 32px;
+}
+.h3slider-next {
+  right: 32px;
+}
+.h3slider-prev:hover,
+.h3slider-next:hover {
+  border-color: var(--gold);
+  color: var(--gold);
+}
+/* 頁次圓點 */
+.h3slider-dots {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+  z-index: 10;
+}
+.h3dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--grey-mid);
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition:
+    background 0.3s,
+    transform 0.3s;
+}
+.h3dot.active {
+  background: var(--gold);
+  transform: scale(1.5);
+}
+
+/* ════════════════════════════════════════════════════════════════
+ * 19. RWD 響應式 ≤900px（平板）
+ *
+ * 主要調整：
+ * - Section padding 縮小為 60px 24px
+ * - 圓盤遊戲改為 min-height: 100svh（全螢幕高度）
+ * - 兩欄 grid 改為單欄（about、gift）
+ * - pslide 改為上下堆疊（圖片上、文字下）
+ * - Slider 箭頭移到圖片中央
+ * ════════════════════════════════════════════════════════════════ */
+@media (max-width: 900px) {
+  section {
+    padding: 60px 24px;
+  }
+
+  /* Hero_2 平板：統一 16/9 */
+  .hero {
+    aspect-ratio: 16/9;
+  }
+  .hero img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .hero-visual {
+    order: -1;
+  }
+  .disk-container {
+    width: 260px;
+    height: 260px;
+  }
+  /* 縮小版軌道半徑：138px → 98px */
+  .orbit-dot:nth-child(1) {
+    transform: rotate(0deg) translateX(98px) translate(-50%, -50%);
+  }
+  .orbit-dot:nth-child(2) {
+    transform: rotate(90deg) translateX(98px) translate(-50%, -50%);
+  }
+  .orbit-dot:nth-child(3) {
+    transform: rotate(180deg) translateX(98px) translate(-50%, -50%);
+  }
+  .orbit-dot:nth-child(4) {
+    transform: rotate(270deg) translateX(98px) translate(-50%, -50%);
+  }
+  .disk-inner {
+    inset: 54px;
+  }
+  .disk-zh {
+    font-size: 17px;
+  }
+
+  .about {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+  .products-header {
+    padding: 40px 24px 36px;
+  }
+  .section-title {
+    font-size: clamp(22px, 4vw, 34px);
+  }
+
+  /* 產品 Slider：圖片與資訊改為上下排列 */
+  .pslider-wrap {
+    height: auto;
+  }
+  .pslide {
+    flex-direction: column;
+  }
+  .pslide-img {
+    width: 100%;
+    height: 60vw;
+    max-height: 420px;
+  }
+  .pslide-info {
+    width: 100%;
+    height: auto;
+    padding: 32px 24px 40px;
+  }
+  /* 箭頭移到圖片垂直中央
+     圖片高 min(60vw, 420px)，箭頭置中 → min(30vw, 210px) */
+  .pslider-next {
+    left: auto;
+    right: 16px;
+    top: min(30vw, 210px);
+    transform: translateY(-50%);
+  }
+  .pslider-prev {
+    left: 16px;
+    top: min(30vw, 210px);
+    transform: translateY(-50%);
+  }
+  /* dots 貼齊圖片下緣 → min(60vw + 8px, 428px) */
+  .pslider-dots {
+    left: 50%;
+    bottom: auto;
+    top: min(calc(60vw + 8px), 428px);
+    transform: translateX(-50%);
+  }
+
+  .features-inner {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+  .features-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
+  .features {
+    padding: 60px 24px;
+  }
+
+  .gift {
+    grid-template-columns: 1fr;
+  }
+  .gift-visual {
+    min-height: 280px;
+    padding: 40px;
+  }
+  .gift-text {
+    padding: 40px 24px;
+    border-top: none;
+  }
+
+  .testimonials-grid {
+    grid-template-columns: 1fr;
+  }
+  .stat-1,
+  .stat-2 {
+    display: none;
+  }
+
+  /* ── Hero_1 圓盤遊戲（平板 ≤900px）────────────────────── */
+
+  /* 統一比例 16/9，與 Hero_2、Hero_3 一致 */
+  .plate-game {
+    aspect-ratio: 16/9;
+    min-height: 0;
+    justify-content: center;
+  }
+
+  /* 說明文字在平板版隱藏，保留給主視覺使用空間 */
+  .game-tagline {
+    display: none;
+  }
+
+  /* 「按我轉一下生肖」「按我轉一下祝福」兩顆按鈕之間的間距與上下留白 */
+  .game-btns-row {
+    gap: 10px;
+    padding: 4px 0 3px;
+  }
+
+  /* 兩顆按鈕的字級、內距、字距 */
+  .btn-game-action {
+    font-size: 11px;
+    padding: 6px 16px;
+    letter-spacing: 0.25em;
+  }
+
+  /* 三欄主視覺排版（左側生肖圖 | 中央轉盤 | 右側生肖大字） */
+  .game-main-row {
+    grid-template-columns: 1fr auto 1fr;
+    gap: 0;
+    flex: none; /* 不再撐滿剩餘高度，讓 justify-content:center 正確計算置中 */
+  }
+  /* overflow: visible 讓大字形（line-height < 1 渲染超出 line-box 的部分）
+     不被 side-panel 裁切；plate-game 的 overflow:hidden 仍負責外層裁剪 */
+  .side-panel {
+    height: 100%;
+    overflow: visible;
+  }
+
+  /* 轉盤切換時左右面板的滑出動畫（與電腦版相同） */
+  .side-panel-left .panel-inner.panel-out {
+    transform: translateX(-115%);
+    opacity: 0;
+  }
+  .side-panel-right .panel-inner.panel-out {
+    transform: translateX(115%);
+    opacity: 0;
+  }
+
+  /* 左側生肖動物插圖的大小（與電腦版相同 vw 比例） */
+  .animal-img {
+    width: 24vw;
+    height: 24vw;
+  }
+
+  /* 中央轉盤圖的大小（再放大：45vw → 60vw） */
+  .disk-stack-container {
+    width: 60vw;
+    height: 60vw;
+  }
+
+  /* 右側生肖文字群組的排列方式 */
+  .zodiac-right {
+    flex-direction: column;
+    align-items: center;
+    padding: 0;
+    gap: 0;
+  }
+
+  /* 右側天干文字（例：「午」）的字級 ← 與電腦版相同 13vw */
+  .zodiac-stem {
+    font-size: 13vw;
+  }
+
+  /* 右側生肖大字（例：「馬」）的字級 ← 與電腦版相同 19vw */
+  .zodiac-animal {
+    font-size: 19vw;
+  }
+
+  /* 右側英文斜體裝飾字（例：Horse）沿用電腦版直書絕對定位 */
+}
+
+/* ════════════════════════════════════════════════════════════════
+ * 20. RWD 響應式 ≤600px（手機）
+ * ════════════════════════════════════════════════════════════════ */
+@media (max-width: 600px) {
+  /* Hero_2 手機：統一 16/9，移除舊 min-height hack */
+  .hero {
+    aspect-ratio: 16/9;
+  }
+  .hero img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .products-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+  }
+  .game-top-text {
+    padding: 8px 16px 0;
+    gap: 2px 0.35em;
+  }
+  .section-title {
+    font-size: clamp(20px, 4.5vw, 28px);
+    letter-spacing: 2px;
+  }
+  .features-grid {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  .testimonials {
+    padding: 52px 20px;
+  }
+  .testimonials-grid {
+    margin-top: 36px;
+  }
+  .testimonial-card {
+    padding: 32px 20px;
+  }
+
+  /* 取消手機版對生肖文字群與動物圖的位移（避免偏移出欄位） */
+  .zodiac-right {
+    transform: none;
+  }
+  .animal-img {
+    transform: none;
+  }
+
+  /* ── Hero_1 圓盤遊戲（手機直向 ≤600px）──────────────────── */
+
+  /* 16/9 比 16/7 更高，確保手機直向時生肖大字不被底部裁切
+     375px → 210px 高（舊：164px），給字形足夠的呼吸空間 */
+  .plate-game {
+    aspect-ratio: 16/9;
+    justify-content: center; /* 繼承自 ≤900px，此處明確保留 */
+  }
+
+  /* 說明文字隱藏，保留版面空間 */
+  .game-tagline {
+    display: none;
+  }
+
+  /* 頂部「祝福您屬 X 的朋友 X」整列文字縮小以符合高度 */
+  .game-top-text {
+    font-size: 10px;
+    padding: 2px 8px 0;
+    gap: 1px 0.3em;
+  }
+
+  /* 頂部文字中的金色大字（生肖名稱 & 祝福詞）縮小 */
+  .gt-highlight {
+    font-size: 15px;
+  }
+
+  /* 三欄主視覺排版（左側生肖圖 | 中央轉盤 | 右側生肖大字） */
+  .game-main-row {
+    grid-template-columns: 1fr auto 1fr;
+    gap: 0;
+    align-items: center;
+    flex: none; /* 繼承自 ≤900px，確保不撐滿剩餘高度 */
+  }
+  /* 繼承 ≤900px 的 overflow: visible，此處明確再寫一次確保不被覆蓋 */
+  .side-panel {
+    height: 100%;
+    overflow: visible;
+  }
+
+  /* 「按我轉一下生肖」「按我轉一下祝福」兩顆按鈕的間距與上方留白 */
+  .game-btns-row {
+    padding: 1px 0 0;
+    gap: 6px;
+  }
+
+  /* 兩顆按鈕的字級、內距、字距（縮小以符合版面） */
+  .btn-game-action {
+    font-size: 10px;
+    padding: 5px 10px;
+    letter-spacing: 0.15em;
+  }
+
+  /* 中央轉盤圖的大小（再放大：42vw → 58vw） */
+  .disk-stack-container {
+    width: 58vw;
+    height: 58vw;
+  }
+
+  /* 左側生肖動物插圖的大小 */
+  .animal-img {
+    width: 22vw;
+    height: 22vw;
+  }
+
+  /* 右側天干文字（例：「午」）的字級 ← 與電腦版相同 13vw */
+  .zodiac-stem {
+    font-size: 13vw;
+  }
+
+  /* 右側生肖大字（例：「馬」）的字級 ← 與電腦版相同 19vw */
+  .zodiac-animal {
+    font-size: 19vw;
+  }
+
+  /* 英文斜體裝飾字在手機版隱藏 */
+  .zodiac-large-en {
+    display: none;
+  }
+
+  /* 產品 Slider 箭頭 */
+  .pslider-next,
+  .pslider-prev {
+    top: 30vw;
+  }
+  .pslider-dots {
+    top: calc(60vw + 8px);
+  }
+
+  /* Hero_3 月餅圖片 Slider：縮小至 86vw */
+  .h3slide {
+    padding: 36px 0;
+  }
+  .h3slide img {
+    width: min(480px, 86vw);
+    height: min(480px, 86vw);
+  }
+  .h3slider-prev {
+    left: 10px;
+  }
+  .h3slider-next {
+    right: 10px;
+  }
+}
+
+/* ════════════════════════════════════════════════════════════════
+ * 21. RWD 響應式 ≤480px（極小螢幕）
+ * ════════════════════════════════════════════════════════════════ */
+@media (max-width: 480px) {
+  section {
+    padding: 48px 16px;
+  }
+
+  /* Hero_2：≤480px 繼承 16/9 aspect-ratio，不需 min-height override */
+  .hero img {
+    object-position: center top; /* 小螢幕優先顯示圖片上方主體 */
+  }
+
+  .features {
+    padding: 48px 16px;
+  }
+  .products-header {
+    padding: 28px 16px 20px;
+  }
+
+  /* 產品 Slider */
+  .pslide-img {
+    height: 72vw;
+  }
+  .pslide-info {
+    padding: 22px 16px 28px;
+  }
+  .product-name {
+    font-size: 17px;
+  }
+  .product-desc {
+    margin-bottom: 20px;
+    font-size: 12px;
+  }
+  .pslider-next,
+  .pslider-prev {
+    top: 36vw;
+    width: 38px;
+    height: 38px;
+    font-size: 14px;
+  }
+  .pslider-dots {
+    top: calc(72vw + 8px);
+  }
+  .section-title {
+    font-size: clamp(19px, 5vw, 26px);
+    letter-spacing: 1.5px;
+  }
+
+  /* ── Hero_1 圓盤遊戲（極小螢幕 ≤480px，如 iPhone SE）────── */
+
+  /* 繼承 ≤600px 的 aspect-ratio: 16/9；按鈕換行後高度增加，
+     加 min-height 確保不因計算誤差而裁切底部生肖大字 */
+  .plate-game {
+    min-height: 190px;
+  }
+
+  /* 中央轉盤圖的大小（再放大：42vw → 58vw） */
+  .disk-stack-container {
+    width: 58vw;
+    height: 58vw;
+  }
+
+  /* 左側生肖動物插圖的大小 */
+  .animal-img {
+    width: 22vw;
+    height: 22vw;
+  }
+
+  /* 右側天干文字（例：「午」）的字級 ← 與電腦版相同 13vw */
+  .zodiac-stem {
+    font-size: 13vw;
+  }
+
+  /* 右側生肖大字（例：「馬」）的字級 ← 與電腦版相同 19vw */
+  .zodiac-animal {
+    font-size: 19vw;
+  }
+
+  /* 英文斜體裝飾字在極小螢幕繼續隱藏 */
+  .zodiac-large-en {
+    display: none;
+  }
+
+  /* 按鈕列：螢幕太窄時允許換行，兩顆按鈕各自撐滿半行 */
+  .game-btns-row {
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 1px 8px;
+    gap: 5px;
+  }
+
+  /* 兩顆按鈕的字級、內距；flex:1 + min-width 讓按鈕撐滿寬度 */
+  .btn-game-action {
+    padding: 4px 8px;
+    font-size: 9px;
+    flex: 1;
+    min-width: 100px;
+    text-align: center;
+  }
+
+  /* 頂部「祝福您屬 X 的朋友 X」那行文字縮到最小 */
+  .game-top-text {
+    padding: 1px 8px 0;
+    font-size: 9px;
+    gap: 1px 0.3em;
+  }
+
+  /* 頂部文字中的金色大字（生肖名稱 & 祝福詞）的字級 */
+  .gt-highlight {
+    font-size: 13px;
+  }
+
+  .testimonial-card {
+    padding: 28px 18px;
+  }
+  .testimonial-text {
+    font-size: 12px;
+  }
+  .toast {
+    right: 16px;
+    bottom: 16px;
+    padding: 10px 16px;
+    font-size: 12px;
+  }
+  .gift-text {
+    padding: 32px 16px;
+  }
+  .gift-visual {
+    min-height: 220px;
+    padding: 28px;
+  }
+  .marquee-track span {
+    font-size: 10px;
+    letter-spacing: 3px;
+  }
+
+  /* Hero_3 */
+  .h3slide {
+    padding: 28px 0;
+  }
+}
+
+/* ════════════════════════════════════════════════════════════════
+ * 22. 手機橫向模式（landscape，螢幕高度 ≤500px）
+ *
+ * 橫向時螢幕高度很短，改用 aspect-ratio: 21/9 並縮小各元素。
+ * 調整：改 clamp 數值中的 vh 參考值。
+ * ════════════════════════════════════════════════════════════════ */
+@media (max-height: 500px) and (orientation: landscape) {
+  /* ── Hero_1 手機橫向模式（高度 ≤500px）──────────────────── */
+
+  /* 整個轉盤區塊切換為超寬比例（橫向螢幕高度很有限） */
+  .plate-game {
+    aspect-ratio: 21 / 9;
+    min-height: 0;
+  }
+
+  /* 中央轉盤圖的大小（再放大：31vh→42vh / 448→608） */
+  .disk-stack-container {
+    width: clamp(228px, 42vh, 608px);
+    height: clamp(228px, 42vh, 608px);
+  }
+
+  /* 左側生肖動物插圖的大小 */
+  .animal-img {
+    width: clamp(100px, 18vh, 240px);
+    height: clamp(100px, 18vh, 240px);
+  }
+
+  /* 右側天干文字（例：「午」）的字級 */
+  .zodiac-stem {
+    font-size: clamp(22px, 7vh, 70px);
+  }
+
+  /* 右側生肖大字（例：「馬」）的字級 */
+  .zodiac-animal {
+    font-size: clamp(34px, 11vh, 110px);
+  }
+
+  /* 右側英文斜體裝飾字的字級 */
+  .zodiac-large-en {
+    font-size: clamp(10px, 3vh, 36px);
+  }
+
+  /* 底部說明文字「為您生命中最重要的人…」的上下留白 */
+  .game-tagline {
+    padding: 2px 0;
+  }
+
+  /* 底部說明文字的字級與行高 */
+  .game-tagline p {
+    font-size: 1.1vh;
+    line-height: 1.6;
+  }
+
+  /* 「按我轉一下生肖」「按我轉一下祝福」按鈕列的上下留白 */
+  .game-btns-row {
+    padding: 4px 0;
+  }
+}
+
+/* ════════════════════════════════════════════════════════════════
+ * 23. Design Enhancements（frontend-design skill）
+ *
+ * 依照 Anthropic frontend-design skill 的設計原則強化視覺：
+ *   · Tone      → Luxury / Refined + Editorial
+ *   · Texture   → Grain overlay 增加紙質溫度感
+ *   · Motion    → 精心編排的進場動畫、Gold shimmer
+ *   · Hover     → 令人驚喜的微互動（lift、scan line、glint）
+ *   · Typography → 更強的字型層次與視覺對比
+ *   · Selection → 品牌色選取反白
+ * ════════════════════════════════════════════════════════════════ */
+
+/* ── 品牌色文字選取 ── */
+::selection {
+  background: var(--gold);
+  color: var(--grey-ink);
+}
+
+/* ── 全頁 Grain 紋理疊層（紙質感）
+   原理：body::after 建立半透明 SVG noise 紋理，pointer-events:none 不干擾點擊
+   調整濃度：改 opacity（0 = 無，0.06 = 預設，0.12 = 較重） ── */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  opacity: 0.045;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+  background-size: 200px 200px;
+}
+
+/* ── 頁面入場動畫（page-fade-in）
+   整個 body 從 opacity:0 淡入，0.5s 延遲讓 DOM 渲染先就緒 ── */
+@keyframes pageFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+body {
+  animation: pageFadeIn 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.15s both;
+}
+
+/* ── Gold Shimmer 動畫（用於 .section-eyebrow、.gold-line 等）
+   光線從左掃過，製造金屬反光感 ── */
+@keyframes goldShimmer {
+  0% {
+    background-position: -200% center;
+  }
+  100% {
+    background-position: 200% center;
+  }
+}
+.section-eyebrow,
+.product-flavor,
+.pslide-counter {
+  background: linear-gradient(
+    105deg,
+    var(--gold) 30%,
+    var(--gold-pale) 50%,
+    var(--gold) 70%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: goldShimmer 4s linear infinite;
+}
+/* 調整速度：改 4s 的秒數；調整亮度：改 --gold-pale 的顏色值 */
+
+/* ── .gold-line 細節強化：漸層線 ── */
+.gold-line {
+  background: linear-gradient(
+    to right,
+    var(--gold),
+    var(--gold-pale),
+    transparent
+  );
+  width: 80px;
+}
+
+/* ── Hero_2 暗角（Vignette）效果
+   讓圖片邊緣自然融入頁面背景，增加縱深感 ── */
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: radial-gradient(
+    ellipse at center,
+    transparent 100%,
+    rgb(105, 105, 105) 100%
+  );
+  pointer-events: none;
+}
+
+/* ── Marquee：增加高度與上下 padding（深炭黑背景，呼應 navbar / footer） ── */
+.marquee-strip {
+  padding: 18px 0;
+}
+
+/* ── Section title：進場後的微縮放動畫 ── */
+.section-title.visible,
+.reveal.visible .section-title {
+  animation: titleEntry 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@keyframes titleEntry {
+  from {
+    letter-spacing: 8px;
+    opacity: 0.6;
+  }
+  to {
+    letter-spacing: 3px;
+    opacity: 1;
+  }
+}
+
+/* ── Feature 數字：hover 時從灰變金色 ── */
+.feature-item {
+  cursor: default;
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.feature-item:hover {
+  transform: translateY(-4px);
+}
+.feature-item:hover .feature-num {
+  color: var(--gold-pale);
+  transition: color 0.4s ease;
+}
+.feature-item:hover .feature-line {
+  width: 48px;
+  transition: width 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ── Testimonial card：hover 微上浮 + 左側金線 ── */
+.testimonial-card {
+  position: relative;
+  transition:
+    transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.4s ease,
+    background 0.3s;
+}
+.testimonial-card::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--gold);
+  transform: scaleY(0);
+  transform-origin: bottom;
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.testimonial-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.07);
+  background: var(--white);
+}
+.testimonial-card:hover::before {
+  transform: scaleY(1);
+}
+
+/* ── Quote mark：更大更裝飾性 ── */
+.testimonial-quote {
+  font-family: "EB Garamond", serif;
+  font-size: 80px;
+  color: var(--gold-pale);
+  opacity: 0.6;
+  line-height: 1;
+  margin-bottom: 0;
+}
+
+/* ── Product Slider：圖片 hover 微縮放，搭配 overflow:hidden 裁切 ── */
+.pslide-img img {
+  transition: transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.pslide-img:hover img {
+  transform: scale(1.04);
+}
+
+/* ── btn-primary 強化：hover 時掃過光線 ── */
+.btn-primary {
+  position: relative;
+  overflow: hidden;
+}
+.btn-primary::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -75%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(
+    to right,
+    transparent,
+    rgba(255, 255, 255, 0.12),
+    transparent
+  );
+  transform: skewX(-20deg);
+  transition: left 0.55s ease;
+}
+.btn-primary:hover::after {
+  left: 150%;
+}
+
+/* ── product-add 按鈕：hover 背景填金色 ── */
+.product-add:hover {
+  background: var(--gold);
+  border-color: var(--gold);
+  color: var(--white);
+}
+
+/* ── .products-header 標題：滑入下底線 ── */
+.section-title {
+  position: relative;
+  display: inline-block;
+}
+.products-header .section-title::after {
+  content: "";
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background: var(--gold);
+  transition: width 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.products-header:hover .section-title::after {
+  width: 100%;
+}
+
+/* ── Features 區段：背景細紋線（橫向）增加材質感 ── */
+.features {
+  background-image:
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 79px,
+      rgba(190, 168, 96, 0.04) 79px,
+      rgba(190, 168, 96, 0.04) 80px
+    ),
+    linear-gradient(to bottom, var(--grey-bg), var(--cream));
+}
+
+/* ── h3 月餅 Slider：hover 放大 ── */
+.h3slide img {
+  transition:
+    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+    filter 0.5s ease;
+  filter: drop-shadow(0 8px 32px rgba(190, 168, 96, 0.1));
+}
+.h3slide img:hover {
+  transform: scale(1.03) translateY(-4px);
+  filter: drop-shadow(0 20px 48px rgba(190, 168, 96, 0.22));
+}
+
+/* ── Toast 強化：玻璃質感 ── */
+.toast {
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  background: rgba(46, 46, 46, 0.88);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
+}
+
+/* ── Focus outline 品牌化（鍵盤導覽用） ── */
+:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 3px;
+}
+
+/* ── Grain & shimmer：手機關閉 (效能考量) ── */
+@media (max-width: 600px) {
+  body::after {
+    display: none;
+  }
+  @keyframes goldShimmer {
+    from {
+    }
+    to {
+    }
+  }
+}
+
+/* ════════════════════════════════════════════════════════════════
+ * 24. 固定導覽列（Site Navigation）
+ *
+ * 固定在頂部，深炭底 + 毛玻璃效果，與 marquee / footer 一致。
+ * body 加上 padding-top: 60px 避免內容被遮住。
+ * ════════════════════════════════════════════════════════════════ */
+:root {
+  --nav-h: 198px; /* 各斷點會在 @media 內覆寫，供 .plate-game 等元素引用 */
+}
+body {
+  padding-top: var(--nav-h);
+}
+
+.site-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 500;
+  height: auto;
+  min-height: 198px;
+  padding: 14px 0;
+  background: rgba(250, 245, 236, 0.76);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid rgba(190, 168, 96, 0.22);
+}
+.nav-inner {
+  min-height: 198px;
+  padding: 0 clamp(20px, 5vw, 80px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;     /* 水平置中 */
+  justify-content: center; /* 垂直置中 */
+  gap: 8px;
+  position: relative;
+}
+/* LOGO 連結容器：讓 <a> 不撐成全寬，僅包覆 LOGO 本身，
+   並維持 flex 居中的對齊基準 */
+.site-nav .nav-logo-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 0; /* 移除 img inline 底部空隙 */
+  text-decoration: none;
+  margin: 0 auto;
+}
+/* navbar 內的 LOGO 圖片：桌機 90px，透過 nav-inner + nav-logo-link
+   雙重 flex 居中對齊，達成上下左右皆置中 */
+.site-nav .footer-logo {
+  height: 90px;
+  width: auto;
+  max-width: 95%;
+  margin: 0 auto;
+  display: block;
+  opacity: 1;
+  flex-shrink: 0;
+}
+/* .nav-brand 內部：中文 / | / 英文 三層垂直堆疊 */
+.site-nav .nav-brand {
+  flex-direction: column !important;
+  align-items: center;
+  gap: 2px;
+  text-align: center;
+}
+.site-nav .nav-brand-sep {
+  font-size: 12px;
+  line-height: 1;
+  color: rgba(160, 136, 64, 0.45);
+  font-weight: 300;
+  letter-spacing: 0;
+}
+/* CTA 釘在 nav 右側，不影響品牌置中 */
+.nav-cta {
+  position: absolute;
+  right: clamp(20px, 5vw, 80px);
+  top: 50%;
+  transform: translateY(-50%);
+}
+/* 手機版（≤480px）若空間不足，CTA 改回 flex 內排，
+   讓品牌與按鈕擠到同一行不疊到 */
+@media (max-width: 480px) {
+  .nav-inner {
+    justify-content: space-between;
+  }
+  .nav-cta {
+    position: static;
+    transform: none;
+  }
+}
+/* 品牌名稱（左側） */
+.nav-brand {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  text-decoration: none;
+  flex-shrink: 0;
+}
+.nav-brand-zh {
+  font-family: "Noto Serif TC", serif;
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--gold);
+  letter-spacing: 0.1em;
+}
+.nav-brand-sep {
+  color: rgba(190, 168, 96, 0.3);
+  font-size: 12px;
+  font-weight: 300;
+}
+.nav-brand-en {
+  font-size: 11px;
+  color: var(--grey-dark);
+  letter-spacing: 0.22em;
+}
+/* 中央連結 */
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: clamp(20px, 3vw, 44px);
+}
+.nav-link {
+  font-family: "Noto Serif TC", serif;
+  font-size: 11px;
+  font-weight: 300;
+  letter-spacing: 0.22em;
+  color: var(--grey-mid);
+  text-decoration: none;
+  transition: color 0.25s;
+  white-space: nowrap;
+}
+.nav-link:hover {
+  color: var(--gold-pale);
+}
+/* 右側 CTA 按鈕 */
+.nav-cta {
+  font-family: "Noto Serif TC", serif;
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0.22em;
+  color: var(--grey-ink);
+  background: var(--gold);
+  padding: 8px 22px;
+  text-decoration: none;
+  transition: background 0.25s;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.nav-cta:hover {
+  background: var(--gold-dim);
+}
+
+/* ── Nav RWD（LOGO 各斷點放大 1.5 倍；nav 高度同步） ── */
+@media (max-width: 900px) {
+  :root { --nav-h: 176px; }
+  .nav-links {
+    display: none;
+  }
+  .site-nav {
+    min-height: 176px;
+    padding: 12px 0;
+  }
+  .site-nav .footer-logo {
+    height: 78px; /* 52 × 1.5 */
+  }
+}
+@media (max-width: 600px) {
+  :root { --nav-h: 156px; }
+  .site-nav {
+    min-height: 156px;
+    padding: 10px 0;
+  }
+  .site-nav .footer-logo {
+    height: 66px; /* 44 × 1.5 */
+  }
+  .nav-brand-zh {
+    font-size: 14px;
+    letter-spacing: 0.16em;
+  }
+  .nav-brand-en {
+    font-size: 9px;
+    letter-spacing: 0.16em;
+  }
+}
+@media (max-width: 480px) {
+  :root { --nav-h: 140px; }
+  .site-nav {
+    min-height: 140px;
+    padding: 9px 0;
+  }
+  .site-nav .footer-logo {
+    height: 57px; /* 38 × 1.5 */
+  }
+  .nav-cta {
+    padding: 7px 14px;
+    font-size: 9px;
+  }
+}
+
+/* ── Hero 1 手機版滿版往上延伸 ────────────────────────────────
+   用負 margin 把 .plate-game 拉到視窗最上緣（背景影片 inset:0
+   自動跟著覆蓋到 navbar 後方），用等量 padding-top 把互動內容
+   推回 navbar 下方避免被遮住。
+   16/9 aspect-ratio 會把 padding 算進去壓扁內容，因此手機版
+   改用 min-height（影片區 56.25vw 約 16:9 + nav 高度）。 */
+@media (max-width: 900px) {
+  .plate-game {
+    margin-top: calc(-1 * var(--nav-h));
+    padding-top: var(--nav-h);
+    aspect-ratio: auto;
+    min-height: calc(56.25vw + var(--nav-h));
+  }
+}
+
+/* ════════════════════════════════════════════════════════════════
+ * 25. 頁尾（Site Footer）
+ *
+ * 深炭底，與 navbar + marquee 形成深色框架，亮色主體內容居中。
+ * 三欄：品牌 | 飯店資訊 | 版權說明。
+ * ════════════════════════════════════════════════════════════════ */
+.site-footer {
+  background: #DAD9D6;
+  border-top: 1px solid rgba(190, 168, 96, 0.2);
+}
+.footer-inner {
+  padding: 64px clamp(20px, 5vw, 80px) 56px;
+  display: grid;
+  grid-template-columns: 1.2fr 1fr 1fr;
+  gap: 48px;
+  border-bottom: 1px solid rgba(190, 168, 96, 0.1);
+}
+/* 左欄：品牌 */
+.footer-brand-zh {
+  font-family: "Noto Serif TC", serif;
+  font-size: 36px;
+  font-weight: 500;
+  color: var(--gold);
+  letter-spacing: 0.12em;
+  line-height: 1.1;
+  margin-bottom: 8px;
+}
+.footer-brand-hotel {
+  font-family: "Noto Serif TC", serif;
+  font-size: 11px;
+  color: var(--grey-dark);
+  letter-spacing: 0.15em;
+  font-weight: 300;
+  margin-bottom: 4px;
+}
+.footer-brand-sub {
+  font-size: 10px;
+  color: rgba(190, 168, 96, 0.45);
+  letter-spacing: 0.25em;
+}
+/* 中欄 / 右欄：文字 */
+.footer-col-label {
+  font-family: "Noto Serif TC", serif;
+  font-size: 9px;
+  color: var(--gold);
+  letter-spacing: 0.3em;
+  font-weight: 400;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.footer-col-label::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: rgba(190, 168, 96, 0.2);
+}
+.footer-col p {
+  font-family: "Noto Serif TC", serif;
+  font-size: 11px;
+  color: var(--grey-dark);
+  letter-spacing: 0.08em;
+  line-height: 2;
+  font-weight: 300;
+}
+/* 底部版權條 */
+.footer-bottom {
+  padding: 18px clamp(20px, 5vw, 80px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+.footer-bottom p {
+  font-family: "Noto Serif TC", serif;
+  font-size: 10px;
+  color: var(--grey-deep);
+  letter-spacing: 0.2em;
+  font-weight: 300;
+}
+
+/* ── Footer RWD ── */
+@media (max-width: 900px) {
+  .footer-inner {
+    grid-template-columns: 1fr 1fr;
+    gap: 36px;
+    padding-bottom: 40px;
+  }
+}
+@media (max-width: 600px) {
+  .footer-inner {
+    grid-template-columns: 1fr;
+    gap: 28px;
+    padding: 44px 20px 36px;
+  }
+  .footer-bottom {
+    flex-direction: column;
+    text-align: center;
+    gap: 6px;
+    padding: 16px 20px;
+  }
+}
+
+/* ════════════════════════════════════════════════════════════════
+ * 26. Hero_2 重新設計：文字覆層 + 立即購買 CTA
+ *
+ * 結構：.hero-content（絕對定位）→ .hero-text（最大寬度限制）
+ * 暗角漸層：左深右透，讓左側文字在圖片上清晰可讀。
+ * 按鈕：金色填滿 CTA（立即購買）+ 白色文字連結（了解更多）。
+ * ════════════════════════════════════════════════════════════════ */
+
+/* 淺灰暖調漸層：左側 cream-grey 霧面打底，右側透明，文字金色對比清晰 */
+.hero::before {
+  background: linear-gradient(
+    108deg,
+    rgba(218, 217, 214, 0.90) 0%,
+    rgba(218, 217, 214, 0.65) 38%,
+    rgba(218, 217, 214, 0.12) 65%,
+    transparent 100%
+  );
+}
+
+/* 文字覆層容器：絕對定位填滿圖片，垂直置中對齊 */
+.hero-content {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  padding: 0 clamp(36px, 8vw, 140px);
+}
+
+/* 文字區塊寬度上限：隨視窗等比縮放 */
+.hero-text {
+  max-width: clamp(280px, 38vw, 600px);
+}
+
+/* Eyebrow：深金色前置線 — 淺灰背景上深金對比清晰 */
+.hero-content .hero-eyebrow {
+  color: var(--gold-dim);
+  font-size: clamp(9px, 0.85vw, 13px);
+  letter-spacing: 0.2em;
+  margin-bottom: clamp(10px, 1.3vw, 22px);
+}
+.hero-content .hero-eyebrow::before {
+  background: var(--gold-dim);
+}
+
+/* 主標題：深金（深金 vs 淺金形成層次） */
+.hero-content .hero-title {
+  color: var(--gold-dim);
+  margin-bottom: clamp(6px, 0.8vw, 14px);
+  font-size: clamp(36px, 4.5vw, 72px);
+}
+
+/* 年份裝飾大數字：深金低透，在淺灰底上仍有水印感 */
+.hero-content .hero-title .year {
+  color: rgba(160, 136, 64, 0.18);
+  font-size: clamp(80px, 11vw, 160px);
+  letter-spacing: clamp(2px, 0.3vw, 6px);
+}
+
+/* 副標題：淺金 — 與深金標題形成深淺對比 */
+.hero-content .hero-subtitle {
+  color: var(--gold-pale);
+  font-size: clamp(8px, 0.75vw, 12px);
+  letter-spacing: 0.35em;
+  margin-bottom: clamp(12px, 1.8vw, 28px);
+}
+
+/* Gold line：深金往右漸透 */
+.hero-content .gold-line {
+  background: linear-gradient(to right, var(--gold-dim), transparent);
+  width: clamp(40px, 4.5vw, 80px);
+  margin: 0 0 clamp(16px, 2vw, 36px);
+}
+
+/* 說明文字：深炭黑 — 淺灰底上確保可讀性 */
+.hero-content .hero-desc {
+  color: var(--charcoal);
+  font-size: clamp(11px, 1vw, 15px);
+  margin-bottom: clamp(24px, 2.8vw, 52px);
+  line-height: 2;
+}
+
+/* ── 立即購買：深金填滿 CTA（淺灰背景下比標準金更有份量） ── */
+.hero-content .btn-primary {
+  background: var(--gold-dim);
+  color: var(--off-white);
+  padding: clamp(10px, 1.1vw, 18px) clamp(28px, 3.8vw, 60px);
+  font-size: clamp(9px, 0.85vw, 13px);
+  font-weight: 400;
+  letter-spacing: 0.32em;
+  border: none;
+}
+.hero-content .btn-primary:hover {
+  background: var(--gold);
+  box-shadow: 0 8px 36px rgba(160, 136, 64, 0.28);
+}
+
+/* ── 了解更多：深金文字連結 ── */
+.hero-content .btn-text {
+  color: var(--gold-dim);
+}
+.hero-content .btn-text:hover {
+  color: var(--gold);
+}
+
+/* ── Hero_2 覆層 RWD：平板 ≤900px ── */
+@media (max-width: 900px) {
+  .hero::before {
+    background: linear-gradient(
+      to top,
+      rgba(218, 217, 214, 0.90) 0%,
+      rgba(218, 217, 214, 0.42) 55%,
+      transparent 100%
+    );
+  }
+  .hero-content {
+    align-items: flex-end;
+    padding: 0 32px 48px;
+  }
+  .hero-text {
+    max-width: 100%;
+  }
+  .hero-content .hero-title .year {
+    font-size: clamp(60px, 12vw, 100px);
+  }
+}
+
+/* ── Hero_2 覆層 RWD：手機 ≤600px ── */
+@media (max-width: 600px) {
+  .hero-content {
+    padding: 0 clamp(14px, 3.5vw, 24px) clamp(20px, 5vw, 36px);
+  }
+  .hero-content .hero-eyebrow {
+    font-size: clamp(8px, 1.8vw, 11px);
+    letter-spacing: 0.12em;
+    margin-bottom: clamp(8px, 2vw, 13px);
+  }
+  .hero-content .hero-title {
+    font-size: clamp(22px, 6vw, 32px);
+    margin-bottom: clamp(4px, 1.2vw, 10px);
+  }
+  .hero-content .hero-title .year {
+    font-size: clamp(52px, 14vw, 72px);
+  }
+  .hero-content .hero-subtitle {
+    margin-bottom: clamp(8px, 2.2vw, 16px);
+  }
+  .hero-content .hero-desc {
+    display: none;
+  }
+  .hero-content .gold-line {
+    margin-bottom: clamp(10px, 2.8vw, 20px);
+  }
+  .hero-content .btn-primary {
+    padding: clamp(8px, 1.8vw, 13px) clamp(18px, 5vw, 36px);
+    font-size: clamp(8px, 1.8vw, 11px);
+    letter-spacing: 0.18em;
+  }
+}
+
+/* ════════════════════════════════════════════════════════════════
+ * 27. Hero_3 月餅展示介紹（簡易靜態版）
+ *
+ * 覆寫 section 18 的 padding:0 與 overflow:hidden，
+ * 以六宮格圖片 + 單一 CTA 取代原有 Slider 結構。
+ * ════════════════════════════════════════════════════════════════ */
+
+/* 覆寫基礎設定：統一 16/9，flex 垂直置中 */
+.hero3 {
+  aspect-ratio: 16 / 9;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0 clamp(20px, 6vw, 100px);
+  overflow: hidden;
+  text-align: center;
+  border-top: 1px solid var(--grey-main);
+}
+
+/* Eyebrow / Title 置中 */
+.h3-header {
+  margin-bottom: clamp(24px, 4vh, 56px);
+}
+.hero3 .section-eyebrow {
+  justify-content: center;
+}
+.hero3 .section-eyebrow::before {
+  display: none;
+}
+.hero3 .section-title {
+  text-align: center;
+}
+
+/* 六宮格展示列 */
+.h3-showcase {
+  display: flex;
+  gap: clamp(12px, 3vw, 36px);
+  justify-content: center;
+  flex-wrap: wrap;
+  width: 100%;
+  margin-bottom: clamp(24px, 4vh, 60px);
+}
+
+/* 單一產品格：等比縮放 */
+.h3-item {
+  flex: 1 1 clamp(80px, 9vw, 160px);
+  max-width: clamp(120px, 14vw, 220px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(6px, 0.7vw, 12px);
+}
+.h3-item img {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: contain;
+  display: block;
+  filter: drop-shadow(0 clamp(4px, 0.5vw, 8px) clamp(14px, 1.5vw, 24px) rgba(0, 0, 0, 0.07));
+  transition:
+    transform 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+    filter 0.45s ease;
+}
+.h3-item:hover img {
+  transform: translateY(clamp(-6px, -0.6vw, -4px)) scale(1.05);
+  filter: drop-shadow(0 clamp(12px, 1.3vw, 22px) clamp(28px, 3vw, 44px) rgba(190, 168, 96, 0.2));
+}
+.h3-name {
+  font-family: "Noto Serif TC", serif;
+  font-size: clamp(9px, 0.9vw, 14px);
+  font-weight: 400;
+  color: var(--grey-ink);
+  letter-spacing: 0.2em;
+}
+.h3-sub {
+  font-family: "EB Garamond", serif;
+  font-style: italic;
+  font-size: clamp(8px, 0.8vw, 13px);
+  color: var(--gold);
+  letter-spacing: 0.1em;
+}
+
+/* 底部 CTA */
+.h3-cta {
+  display: flex;
+  justify-content: center;
+}
+.h3-buy {
+  background: var(--gold);
+  color: var(--grey-ink);
+  padding: clamp(10px, 1.1vw, 18px) clamp(36px, 4.8vw, 76px);
+  font-size: clamp(9px, 0.85vw, 13px);
+  font-weight: 400;
+  letter-spacing: 0.32em;
+  border: none;
+}
+.h3-buy:hover {
+  background: var(--gold-dim);
+  box-shadow: 0 8px 32px rgba(190, 168, 96, 0.3);
+}
+
+/* ── Hero_3 RWD：平板 ≤900px ── */
+@media (max-width: 900px) {
+  .hero3 {
+    aspect-ratio: 16/9;
+    padding: 0 24px;
+  }
+  .h3-showcase {
+    gap: 16px;
+  }
+  .h3-item {
+    flex: 1 1 100px;
+    max-width: 150px;
+  }
+}
+
+/* ── Hero_3 RWD：手機 ≤600px ── */
+@media (max-width: 600px) {
+  .hero3 {
+    aspect-ratio: 16/9;
+    padding: 0 16px;
+  }
+  .h3-header {
+    margin-bottom: 24px;
+  }
+  .h3-showcase {
+    gap: 12px;
+    margin-bottom: 28px;
+  }
+  .h3-item {
+    flex: 0 0 calc(33.33% - 10px);
+    max-width: none;
+  }
+  .h3-item img {
+    width: 100%;
+  }
+  .h3-buy {
+    padding: 13px 48px;
+    font-size: 10px;
+    letter-spacing: 0.22em;
+  }
+}
+
+/* ════════════════════════════════════════════════════════════════
+ * 28. 「月華札記 Moonlight Editorial」重新設計層
+ *
+ * 設計方向：以資深 UI/UX 設計師重新規劃整個介面，
+ *           強化字級對比、編號式專欄敘事、月相裝飾分隔，
+ *           不破壞既有 JS 依賴的 ID/Class，純粹覆蓋既有樣式。
+ *
+ *  28-A 設計 Token 擴充（深象牙、古董金、陰影系統）
+ *  28-B 字型輔助類別與標題裝飾
+ *  28-C Hero_1 頂部祝福文字層次強化
+ *  28-D Hero_2 主視覺：年份大字水印與層次
+ *  28-E Hero_3 月餅展示：3×2 編輯型網格
+ *  28-F Marquee 邊緣淡出效果
+ *  28-G Features：較大編號、垂直編輯版型
+ *  28-H Testimonials：雜誌式 pull-quote 排版
+ *  28-I 月相裝飾分隔（.section-divider）
+ *  28-J Footer 與其他細節
+ * ════════════════════════════════════════════════════════════════ */
+
+/* ── 28-A：擴充設計 Token ───────────────────────────────────── */
+:root {
+  /* 統一中性淺灰：所有原米白系列均改為 #DAD9D6 */
+  --ivory: #DAD9D6;
+  --ivory-soft: #DAD9D6;
+  --ivory-deep: #DAD9D6;
+  /* 深古董金：作為印章、序號、強調 */
+  --gold-deep: #8a6f2e;
+  /* 陰影系統 */
+  --shadow-sm: 0 2px 8px rgba(28, 24, 20, 0.05);
+  --shadow-md: 0 12px 32px rgba(28, 24, 20, 0.08);
+  --shadow-lg: 0 24px 64px rgba(28, 24, 20, 0.12);
+  /* 圓滑緩動 */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out-quart: cubic-bezier(0.76, 0, 0.24, 1);
+}
+
+/* ── 28-B：字型輔助與通用排版改良 ──────────────────────────── */
+.display-serif {
+  font-family: "Cormorant Garamond", "EB Garamond", serif;
+  font-weight: 400;
+  font-style: italic;
+}
+
+/* Section-eyebrow 升級：兩側裝飾（左短線 + 右編號）
+   保持與既有用法相容，新加 .eyebrow-num 子元素時自動取得位置 */
+.section-eyebrow {
+  text-transform: none;
+  font-size: clamp(10px, 0.85vw, 13px);
+  letter-spacing: 0.32em;
+  font-weight: 400;
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+}
+.eyebrow-num {
+  font-family: "Cormorant Garamond", "EB Garamond", serif;
+  font-style: italic;
+  font-weight: 500;
+  font-size: 1.05em;
+  color: var(--gold-deep);
+  letter-spacing: 0.04em;
+  background: none;
+  -webkit-text-fill-color: var(--gold-deep);
+  padding-right: 6px;
+  border-right: 1px solid rgba(160, 136, 64, 0.35);
+}
+
+/* Section title 改進：可以含 .title-divider 小點 */
+.section-title {
+  font-family: "Noto Serif TC", "Cormorant Garamond", serif;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  color: var(--charcoal);
+}
+.title-divider {
+  display: inline-block;
+  margin: 0 0.32em;
+  color: var(--gold);
+  font-family: "Cormorant Garamond", serif;
+  font-weight: 300;
+  transform: translateY(-0.08em);
+  font-size: 0.92em;
+}
+
+/* Section desc 改進：稍微加大、加 italic 點綴 */
+.section-desc {
+  font-size: clamp(13px, 1vw, 15px);
+  line-height: 2.1;
+  color: var(--grey-deep);
+  letter-spacing: 0.04em;
+  font-weight: 300;
+  font-style: normal;
+}
+
+/* ── 28-C：Hero_1 頂部祝福文字層次強化 ──────────────────────── */
+.game-top-text {
+  font-weight: 400;
+  letter-spacing: 0.28em;
+  gap: 0 0.6em;
+}
+.game-top-text > span:not(.gt-highlight) {
+  color: rgba(245, 235, 215, 0.86);
+  text-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.6),
+    0 2px 12px rgba(0, 0, 0, 0.3);
+}
+.gt-highlight {
+  font-weight: 500;
+  font-family: "Noto Serif TC", serif;
+  letter-spacing: 0.16em;
+  position: relative;
+}
+
+/* Hero_1 按鈕：加入更強的精緻細節（hover 時微縮放與光暈） */
+.btn-game-action {
+  position: relative;
+  font-weight: 500;
+  letter-spacing: 0.42em;
+  border: 1px solid rgba(28, 24, 20, 0.18);
+  box-shadow:
+    0 2px 6px rgba(28, 24, 20, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.35);
+  text-transform: none;
+}
+.btn-game-action::before {
+  content: "";
+  position: absolute;
+  inset: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.btn-game-action:hover::before {
+  opacity: 1;
+}
+
+/* Hero_1 tagline 字級稍微提升並改用更精緻字距 + 雙層陰影提升影片背景上的可讀性 */
+.game-tagline p {
+  font-style: normal;
+  letter-spacing: 0.2em;
+  font-weight: 400;
+  text-shadow:
+    0 1px 4px rgba(0, 0, 0, 0.6),
+    0 2px 12px rgba(0, 0, 0, 0.35);
+}
+.game-tagline .tagline-en {
+  font-family: "Cormorant Garamond", "EB Garamond", serif;
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: 0.1em;
+  opacity: 0.88;
+  text-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.55),
+    0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+/* ── 28-D：Hero_2 主視覺重新調整 ──────────────────────────── */
+/* 年份大字：改為極大水印效果（左側對齊文字內容的 baseline） */
+.hero-content .hero-title {
+  font-family: "Noto Serif TC", serif;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  position: relative;
+}
+.hero-content .hero-title .year {
+  font-family: "Cormorant Garamond", "EB Garamond", serif;
+  font-weight: 400;
+  font-style: italic;
+  letter-spacing: -0.02em;
+  color: rgba(160, 136, 64, 0.18);
+  font-size: clamp(96px, 13vw, 200px);
+  line-height: 0.88;
+  margin-bottom: 0;
+}
+
+.hero-content .hero-eyebrow {
+  font-family: "Cormorant Garamond", "EB Garamond", serif;
+  font-style: italic;
+  letter-spacing: 0.28em;
+  font-weight: 400;
+  font-size: clamp(11px, 1vw, 14px);
+}
+
+.hero-content .hero-subtitle {
+  font-family: "Cormorant Garamond", "EB Garamond", serif;
+  font-style: normal;
+  font-weight: 500;
+  letter-spacing: 0.42em;
+  text-transform: uppercase;
+}
+
+.hero-content .hero-desc {
+  font-weight: 400;
+  letter-spacing: 0.06em;
+  font-size: clamp(12px, 1vw, 14px);
+}
+
+/* Hero_2 右下：滾動引導指示 */
+.hero::after {
+  content: none;
+}
+.hero {
+  position: relative;
+}
+.hero .scroll-hint {
+  position: absolute;
+  bottom: clamp(20px, 3vh, 48px);
+  right: clamp(24px, 5vw, 80px);
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-family: "Cormorant Garamond", "EB Garamond", serif;
+  font-style: italic;
+  font-size: 12px;
+  letter-spacing: 0.32em;
+  color: var(--gold-deep);
+  pointer-events: none;
+}
+.hero .scroll-hint::after {
+  content: "";
+  width: 56px;
+  height: 1px;
+  background: linear-gradient(to right, var(--gold-deep), transparent);
+}
+
+/* ── 28-E：Hero_3 月餅展示 — 3×2 編輯型網格（最大改動） ─── */
+.hero3 {
+  aspect-ratio: auto;
+  display: block;
+  padding: clamp(72px, 9vh, 140px) clamp(20px, 5vw, 100px);
+  text-align: left;
+  background:
+    radial-gradient(
+      ellipse at top right,
+      rgba(190, 168, 96, 0.06) 0%,
+      transparent 50%
+    ),
+    var(--ivory);
+  border-top: 1px solid rgba(190, 168, 96, 0.2);
+  position: relative;
+}
+.hero3::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 1px;
+  height: clamp(40px, 6vh, 80px);
+  background: linear-gradient(to bottom, transparent, var(--gold));
+}
+
+/* Header：中央偏左對齊，含描述 */
+.h3-header {
+  text-align: center;
+  max-width: 680px;
+  margin: 0 auto clamp(48px, 7vh, 96px);
+}
+.hero3 .section-eyebrow {
+  justify-content: center;
+  margin-bottom: 24px;
+}
+.hero3 .section-eyebrow::before {
+  background: var(--gold-deep);
+  width: 36px;
+}
+.h3-header .section-title {
+  font-size: clamp(28px, 3.6vw, 52px);
+  letter-spacing: 0.08em;
+  line-height: 1.35;
+  margin-bottom: 22px;
+  display: inline-block;
+}
+.h3-header .section-desc {
+  margin: 0 auto;
+  max-width: 480px;
+  text-align: center;
+}
+
+/* 主要網格：3 欄 × 2 列，每張卡片有充足呼吸 */
+.h3-showcase {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(32px, 4.5vw, 80px) clamp(28px, 4vw, 64px);
+  max-width: 1320px;
+  margin: 0 auto clamp(56px, 7vh, 96px);
+  align-items: stretch;
+}
+
+/* 卡片本體 */
+.h3-item {
+  flex: unset;
+  max-width: unset;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  gap: 0;
+  text-align: center;
+  position: relative;
+  padding-top: 18px;
+}
+/* 卡片頂部：編號（編輯雜誌風格） */
+.h3-num {
+  font-family: "Cormorant Garamond", "EB Garamond", serif;
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(28px, 2.8vw, 44px);
+  color: var(--gold-deep);
+  letter-spacing: 0.05em;
+  line-height: 1;
+  display: block;
+  margin-bottom: 14px;
+  position: relative;
+}
+.h3-num::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: -10px;
+  width: 22px;
+  height: 1px;
+  background: var(--gold-deep);
+  opacity: 0.6;
+}
+
+/* 圖片包裝：較大圓形浮起感 */
+.h3-img-wrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: clamp(18px, 2vw, 32px) 0 clamp(16px, 2vw, 28px);
+}
+.h3-img-wrap::before {
+  content: "";
+  position: absolute;
+  inset: 8% 8% auto 8%;
+  bottom: -4%;
+  border-radius: 50%;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(28, 24, 20, 0.18) 0%,
+    transparent 70%
+  );
+  filter: blur(6px);
+  z-index: 0;
+  transition: opacity 0.5s var(--ease-out-expo);
+  opacity: 0.55;
+}
+.h3-item img {
+  position: relative;
+  z-index: 1;
+  width: 92%;
+  aspect-ratio: 1 / 1;
+  object-fit: contain;
+  filter: drop-shadow(0 6px 18px rgba(28, 24, 20, 0.08));
+  transition:
+    transform 0.7s var(--ease-out-expo),
+    filter 0.6s ease;
+}
+.h3-item:hover img {
+  transform: translateY(-12px) scale(1.06) rotate(-2deg);
+  filter: drop-shadow(0 24px 40px rgba(190, 168, 96, 0.32));
+}
+.h3-item:hover .h3-img-wrap::before {
+  opacity: 0.85;
+  transform: scale(1.08);
+}
+
+/* 卡片底部 Meta */
+.h3-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+}
+.h3-name {
+  font-family: "Noto Serif TC", serif;
+  font-size: clamp(16px, 1.4vw, 22px);
+  font-weight: 500;
+  color: var(--charcoal);
+  letter-spacing: 0.32em;
+  line-height: 1.4;
+  padding-left: 0.32em;
+}
+.h3-sub {
+  font-family: "Cormorant Garamond", "EB Garamond", serif;
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(12px, 1vw, 15px);
+  color: var(--gold);
+  letter-spacing: 0.08em;
+}
+.h3-tagline {
+  font-family: "Noto Serif TC", serif;
+  font-size: clamp(12px, 0.92vw, 13px);
+  font-weight: 300;
+  color: var(--grey-dark);
+  letter-spacing: 0.16em;
+  line-height: 1.9;
+  margin-top: 4px;
+}
+
+/* CTA：金邊空心 + 微互動 */
+.h3-cta {
+  text-align: center;
+}
+.h3-buy {
+  background: transparent;
+  color: var(--charcoal);
+  border: 1px solid var(--gold-deep);
+  padding: clamp(13px, 1.4vw, 18px) clamp(40px, 5vw, 76px);
+  font-size: clamp(10px, 0.85vw, 13px);
+  letter-spacing: 0.38em;
+  font-weight: 500;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+}
+.h3-buy::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--gold-deep);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.55s var(--ease-out-expo);
+  z-index: -1;
+}
+.h3-buy:hover {
+  background: transparent;
+  color: var(--ivory);
+  box-shadow: 0 12px 36px rgba(160, 136, 64, 0.35);
+}
+.h3-buy:hover::before {
+  transform: scaleX(1);
+}
+
+/* ── 28-F：Marquee（已移除左右邊緣漸層淡出，依使用者要求）
+   要復原時：把 display: none 改為 display: block
+   並補回原本的 content / position / width / background 設定。 */
+.marquee-strip {
+  position: relative;
+}
+.marquee-strip::before,
+.marquee-strip::after {
+  display: none;
+}
+.marquee-track span {
+  font-weight: 400;
+  color: rgba(245, 235, 215, 0.7);
+}
+.marquee-track span.zh {
+  font-weight: 400;
+  color: var(--ivory);
+  letter-spacing: 0.36em;
+}
+.marquee-track span.dot {
+  color: var(--gold);
+  font-size: 6px;
+  opacity: 0.7;
+}
+
+/* ── 28-G：Features — 編輯型版型 ──────────────────────────── */
+.features {
+  padding: clamp(80px, 10vh, 140px) clamp(24px, 6vw, 100px);
+  background:
+    linear-gradient(
+      to bottom,
+      var(--ivory-soft) 0%,
+      var(--ivory) 100%
+    );
+  border-top: 1px solid rgba(190, 168, 96, 0.18);
+  border-bottom: 1px solid rgba(190, 168, 96, 0.18);
+  background-image:
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 79px,
+      rgba(160, 136, 64, 0.035) 79px,
+      rgba(160, 136, 64, 0.035) 80px
+    ),
+    linear-gradient(to bottom, var(--ivory-soft), var(--ivory));
+}
+.features-inner {
+  grid-template-columns: 1fr 2.2fr;
+  gap: clamp(48px, 8vw, 120px);
+  max-width: 1400px;
+  margin: 0 auto;
+}
+.features-inner > .reveal .section-title {
+  font-size: clamp(30px, 3.5vw, 48px);
+  letter-spacing: 0.06em;
+  line-height: 1.3;
+}
+.features-grid {
+  gap: clamp(24px, 3vw, 48px);
+  position: relative;
+}
+.features-grid::before {
+  content: "";
+  position: absolute;
+  left: calc(33.33% - clamp(12px, 1.5vw, 24px) / 2);
+  top: 8%;
+  bottom: 8%;
+  width: 1px;
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    rgba(160, 136, 64, 0.25),
+    transparent
+  );
+}
+.features-grid::after {
+  content: "";
+  position: absolute;
+  left: calc(66.66% + clamp(12px, 1.5vw, 24px) / 2);
+  top: 8%;
+  bottom: 8%;
+  width: 1px;
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    rgba(160, 136, 64, 0.25),
+    transparent
+  );
+}
+.feature-item {
+  padding: clamp(16px, 2vw, 28px) clamp(12px, 1.5vw, 20px);
+  position: relative;
+}
+.feature-num {
+  font-family: "Cormorant Garamond", "EB Garamond", serif;
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(64px, 6vw, 96px);
+  color: var(--gold-deep);
+  opacity: 0.32;
+  line-height: 0.85;
+  margin-bottom: clamp(18px, 2.5vw, 28px);
+  letter-spacing: -0.02em;
+}
+.feature-item:hover .feature-num {
+  opacity: 0.65;
+  color: var(--gold-deep);
+}
+.feature-line {
+  width: 32px;
+  background: var(--gold-deep);
+}
+.feature-title {
+  font-family: "Noto Serif TC", serif;
+  font-size: clamp(15px, 1.2vw, 18px);
+  font-weight: 500;
+  letter-spacing: 0.28em;
+  margin-bottom: 14px;
+  color: var(--charcoal);
+}
+.feature-desc {
+  font-size: clamp(12px, 0.9vw, 14px);
+  line-height: 2.1;
+  color: var(--grey-deep);
+  letter-spacing: 0.04em;
+}
+
+/* ── 28-H：Testimonials — 雜誌式 pull-quote ─────────────── */
+.testimonials {
+  padding: clamp(80px, 10vh, 140px) clamp(24px, 6vw, 100px);
+  background:
+    radial-gradient(
+      ellipse at center top,
+      rgba(190, 168, 96, 0.05) 0%,
+      transparent 50%
+    ),
+    var(--ivory-soft);
+  border-top: 1px solid rgba(190, 168, 96, 0.18);
+}
+.testimonials .section-eyebrow {
+  justify-content: center;
+}
+.testimonials .section-title {
+  font-size: clamp(28px, 3.6vw, 52px);
+  letter-spacing: 0.08em;
+  margin-bottom: clamp(48px, 7vh, 80px);
+}
+.testimonials-grid {
+  border: none;
+  background: transparent;
+  gap: clamp(20px, 2vw, 32px);
+  max-width: 1240px;
+  margin: 0 auto;
+  margin-top: clamp(40px, 5vh, 64px);
+}
+.testimonial-card {
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(190, 168, 96, 0.22);
+  padding: clamp(36px, 4vw, 56px) clamp(28px, 3vw, 42px);
+  position: relative;
+}
+.testimonial-card::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 36px;
+  height: 1px;
+  background: var(--gold-deep);
+  transition: width 0.5s var(--ease-out-expo);
+}
+.testimonial-card:hover {
+  background: rgba(255, 255, 255, 0.92);
+  border-color: rgba(160, 136, 64, 0.4);
+}
+.testimonial-card:hover::after {
+  width: 100%;
+}
+.testimonial-quote {
+  font-family: "Cormorant Garamond", "EB Garamond", serif;
+  font-style: italic;
+  font-weight: 300;
+  font-size: clamp(72px, 7vw, 110px);
+  color: var(--gold-deep);
+  opacity: 0.32;
+  line-height: 0.6;
+  display: block;
+  margin: 0 0 -10px;
+}
+.stars {
+  color: var(--gold-deep);
+  font-size: 11px;
+  letter-spacing: 0.42em;
+  margin-bottom: 18px;
+}
+.testimonial-text {
+  font-family: "Noto Serif TC", serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: clamp(13px, 1.05vw, 15.5px);
+  line-height: 2.05;
+  letter-spacing: 0.06em;
+  color: var(--charcoal);
+  margin-bottom: clamp(24px, 3vh, 36px);
+  position: relative;
+}
+.testimonial-text::before {
+  content: "";
+  display: block;
+  width: 28px;
+  height: 1px;
+  background: var(--gold);
+  margin-bottom: 22px;
+}
+.author-name {
+  font-family: "Noto Serif TC", serif;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.28em;
+  color: var(--charcoal);
+  margin-bottom: 4px;
+}
+.author-date {
+  font-family: "Cormorant Garamond", "EB Garamond", serif;
+  font-style: italic;
+  font-size: 12px;
+  color: var(--gold-deep);
+  letter-spacing: 0.16em;
+  opacity: 0.8;
+}
+
+/* ── 28-I：月相裝飾分隔（.section-divider） ──────────────── */
+.section-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(20px, 3vw, 40px);
+  padding: clamp(36px, 5vh, 64px) 24px;
+  background: var(--ivory);
+  position: relative;
+}
+.section-divider .divider-line {
+  flex: 1;
+  max-width: clamp(120px, 18vw, 280px);
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent,
+    rgba(160, 136, 64, 0.4),
+    transparent
+  );
+}
+.section-divider .moon-phases {
+  display: flex;
+  align-items: center;
+  gap: clamp(10px, 1.5vw, 18px);
+}
+.section-divider .moon {
+  width: clamp(7px, 0.8vw, 10px);
+  height: clamp(7px, 0.8vw, 10px);
+  border-radius: 50%;
+  background: var(--gold);
+  position: relative;
+  opacity: 0.5;
+}
+.section-divider .moon.full {
+  background: var(--gold-deep);
+  width: clamp(12px, 1.3vw, 18px);
+  height: clamp(12px, 1.3vw, 18px);
+  opacity: 1;
+  box-shadow:
+    0 0 0 1px rgba(160, 136, 64, 0.3),
+    0 0 18px rgba(190, 168, 96, 0.32);
+}
+.section-divider .moon.crescent {
+  background: var(--ivory);
+  border: 1px solid var(--gold);
+  position: relative;
+  overflow: hidden;
+}
+.section-divider .moon.crescent::after {
+  content: "";
+  position: absolute;
+  inset: -2px -2px -2px 35%;
+  background: var(--gold);
+  border-radius: 50%;
+}
+.section-divider .moon.half {
+  background: linear-gradient(
+    to right,
+    var(--gold) 50%,
+    var(--ivory) 50%
+  );
+  border: 1px solid var(--gold);
+}
+
+/* ── 28-J：Footer 細節升級 ────────────────────────────────── */
+.site-footer {
+  background: #DAD9D6;
+}
+.footer-brand-zh {
+  font-family: "Noto Serif TC", serif;
+  font-weight: 500;
+  letter-spacing: 0.32em;
+  color: var(--gold-deep);
+}
+.footer-brand-hotel {
+  letter-spacing: 0.2em;
+}
+.footer-brand-sub {
+  font-family: "Cormorant Garamond", "EB Garamond", serif;
+  font-style: italic;
+  letter-spacing: 0.16em;
+  color: var(--gold);
+  opacity: 0.7;
+}
+.footer-col-label {
+  color: var(--gold-deep);
+  letter-spacing: 0.4em;
+}
+.footer-col p {
+  letter-spacing: 0.1em;
+  color: var(--grey-deep);
+}
+.footer-bottom p {
+  font-family: "Cormorant Garamond", "EB Garamond", serif;
+  font-style: italic;
+  letter-spacing: 0.18em;
+  color: var(--grey-deep);
+  opacity: 0.8;
+}
+
+/* ── 28-K：Navbar 細節升級 ────────────────────────────────── */
+.site-nav {
+  background: rgba(218, 217, 214, 0.78);
+  border-bottom: 1px solid rgba(160, 136, 64, 0.18);
+}
+.nav-brand-zh {
+  font-family: "Noto Serif TC", serif;
+  font-weight: 500;
+  color: var(--gold-deep);
+  letter-spacing: 0.28em;
+}
+.nav-brand-en {
+  font-family: "Cormorant Garamond", "EB Garamond", serif;
+  font-style: italic;
+  letter-spacing: 0.16em;
+  color: var(--gold);
+}
+.nav-brand-sep {
+  color: rgba(160, 136, 64, 0.32);
+}
+.nav-cta {
+  font-weight: 500;
+  background: var(--gold-deep);
+  color: var(--ivory);
+  letter-spacing: 0.32em;
+  position: relative;
+  overflow: hidden;
+}
+.nav-cta::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--gold);
+  transform: translateY(100%);
+  transition: transform 0.4s var(--ease-out-expo);
+}
+.nav-cta:hover {
+  background: var(--gold-deep);
+}
+.nav-cta:hover::before {
+  transform: translateY(0);
+}
+.nav-cta > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* ── 28-L：Body 背景與整體紙質 ────────────────────────────── */
+body {
+  background: var(--ivory);
+  color: var(--grey-deep);
+  font-feature-settings: "palt" 1, "kern" 1;
+}
+
+/* ── 28-M：Shimmer 動畫色彩調整（更接近古董金而非亮金） ── */
+.section-eyebrow,
+.product-flavor,
+.pslide-counter {
+  background: linear-gradient(
+    105deg,
+    var(--gold-deep) 30%,
+    var(--gold) 50%,
+    var(--gold-deep) 70%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ════════════════════════════════════════════════════════════════
+ * 29. RWD 補丁（重新設計層）
+ * ════════════════════════════════════════════════════════════════ */
+@media (max-width: 900px) {
+  .hero3 {
+    padding: 64px 28px;
+  }
+  .h3-showcase {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 48px 32px;
+    margin-bottom: 56px;
+  }
+  .h3-header {
+    margin-bottom: 48px;
+  }
+  .h3-name {
+    font-size: 16px;
+  }
+  .hero .scroll-hint {
+    display: none;
+  }
+  .features-grid::before,
+  .features-grid::after {
+    display: none;
+  }
+  .features-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .feature-num {
+    font-size: clamp(48px, 8vw, 72px);
+  }
+}
+
+@media (max-width: 600px) {
+  .hero3 {
+    padding: 56px 20px;
+    aspect-ratio: auto;
+  }
+  .h3-header .section-title {
+    font-size: clamp(22px, 6vw, 30px);
+    letter-spacing: 0.06em;
+  }
+  .h3-showcase {
+    grid-template-columns: 1fr 1fr;
+    gap: 40px 20px;
+    margin-bottom: 44px;
+  }
+  .h3-item {
+    flex: unset;
+    max-width: unset;
+    padding-top: 8px;
+  }
+  .h3-num {
+    font-size: 24px;
+    margin-bottom: 8px;
+  }
+  .h3-img-wrap {
+    margin: 14px 0 16px;
+  }
+  .h3-name {
+    font-size: 14px;
+    letter-spacing: 0.22em;
+  }
+  .h3-sub {
+    font-size: 11px;
+  }
+  .h3-tagline {
+    font-size: 11px;
+    letter-spacing: 0.08em;
+  }
+  .h3-buy {
+    padding: 13px 36px;
+    font-size: 10px;
+    letter-spacing: 0.26em;
+  }
+  .features {
+    padding: 56px 20px;
+  }
+  .feature-num {
+    font-size: 56px;
+    margin-bottom: 18px;
+  }
+  .testimonials {
+    padding: 56px 20px;
+  }
+  .testimonial-quote {
+    font-size: 60px;
+  }
+  .section-divider {
+    padding: 28px 16px;
+  }
+  .section-divider .divider-line {
+    max-width: 80px;
+  }
+}
+
+@media (max-width: 480px) {
+  .h3-showcase {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+  .h3-item {
+    max-width: 320px;
+    margin: 0 auto;
+  }
+}
+
+/* ════════════════════════════════════════════════════════════════
+ * 30. 雙城敘事改版（Twin-City Storytelling）
+ *
+ * 「映月・恆藏 Eternal Continuum」雙城紀念禮盒專屬樣式：
+ *  30-A Navbar LOGO 圖示
+ *  30-B Hero 2A 純底圖（Cinematic 比例）
+ *  30-C Hero 2B Statement 品牌主視覺文字頁
+ *  30-D Story 雙城敘事段
+ *  30-E Features 4 欄佈局
+ *  30-F Footer LOGO
+ *  30-G RWD 響應式
+ * ════════════════════════════════════════════════════════════════ */
+
+/* ── 30-A：Navbar 加入 I 紋章 LOGO ───────────────────────── */
+.nav-logo {
+  height: 30px;
+  width: auto;
+  display: block;
+  margin-right: 6px;
+  filter: drop-shadow(0 1px 2px rgba(28, 24, 20, 0.1));
+  flex-shrink: 0;
+}
+.nav-brand {
+  align-items: center;
+}
+
+/* ── 30-B：Hero 2A 純底圖（Image-only Hero） ─────────────── */
+.hero-image {
+  aspect-ratio: 21 / 9;
+  position: relative;
+  overflow: hidden;
+  border-bottom: 1px solid rgba(160, 136, 64, 0.18);
+  background: var(--charcoal);
+}
+.hero-image .hero-image-bg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+.hero-image::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(
+      to bottom,
+      rgba(28, 24, 20, 0.05) 0%,
+      transparent 30%,
+      transparent 65%,
+      rgba(28, 24, 20, 0.4) 100%
+    );
+  pointer-events: none;
+  z-index: 1;
+}
+/* hero-image 上的 scroll hint：在深色圖底上改用象牙白 */
+.hero-image .scroll-hint {
+  color: var(--ivory);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.45);
+  z-index: 3;
+}
+.hero-image .scroll-hint::after {
+  background: linear-gradient(to right, var(--ivory), transparent);
+  opacity: 0.85;
+}
+
+/* ── 30-C：Hero 2B Statement 品牌主視覺文字頁 ────────────── */
+.hero-statement {
+  padding: clamp(80px, 12vh, 160px) clamp(24px, 6vw, 100px);
+  background:
+    radial-gradient(
+      ellipse at top,
+      rgba(190, 168, 96, 0.1) 0%,
+      transparent 60%
+    ),
+    linear-gradient(180deg, var(--ivory) 0%, var(--ivory-soft) 100%);
+  position: relative;
+  border-bottom: 1px solid rgba(160, 136, 64, 0.18);
+  overflow: hidden;
+}
+/* 頂部金線 — 連結上方 Hero 圖與 Statement */
+.hero-statement::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 1px;
+  height: clamp(40px, 6vh, 80px);
+  background: linear-gradient(to bottom, transparent, var(--gold));
+}
+.statement-frame {
+  max-width: 880px;
+  margin: 0 auto;
+  text-align: center;
+  position: relative;
+  /* ⬇ 強制垂直堆疊，避免子元素任何情況下被推成水平 */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+}
+/* 確保 statement-frame 內所有區塊各自獨佔一行，置中對齊 */
+.statement-frame > * {
+  width: auto;
+  max-width: 100%;
+}
+.statement-frame > .statement-eyebrow {
+  /* 保留 inline-flex 讓 ::before/::after 雙短線生效，
+     但用 align-self: center 在 flex column 內水平置中 */
+  align-self: center;
+  margin-left: 0;
+  margin-right: 0;
+}
+.statement-frame > .statement-subtitle,
+.statement-frame > .statement-desc {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+.statement-frame > .gold-line {
+  align-self: center;
+}
+.statement-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  font-family: "Cormorant Garamond", "EB Garamond", serif;
+  font-style: italic;
+  font-size: clamp(11px, 1vw, 14px);
+  letter-spacing: 0.3em;
+  margin-bottom: clamp(28px, 4vh, 48px);
+  color: var(--gold-deep);
+}
+.statement-eyebrow::before,
+.statement-eyebrow::after {
+  content: "";
+  display: inline-block;
+  width: 36px;
+  height: 1px;
+  background: var(--gold-deep);
+  opacity: 0.6;
+}
+.statement-eyebrow .eyebrow-num {
+  border-right: none;
+  padding-right: 0;
+  font-size: 1.4em;
+  color: var(--gold);
+  -webkit-text-fill-color: var(--gold);
+}
+
+/* 商品品牌主視覺 LOGO（Vector Smart Object） */
+.statement-visual {
+  display: block;
+  width: clamp(280px, 50vw, 680px);
+  height: auto;
+  margin: 0 auto clamp(28px, 4vh, 48px);
+  filter: drop-shadow(0 16px 40px rgba(160, 136, 64, 0.22));
+}
+.statement-subtitle {
+  font-family: "Cormorant Garamond", "EB Garamond", serif;
+  font-weight: 500;
+  font-size: clamp(11px, 1vw, 14px);
+  letter-spacing: 0.45em;
+  color: var(--grey-deep);
+  margin-bottom: clamp(18px, 2vh, 28px);
+  text-transform: uppercase;
+}
+.hero-statement .gold-line {
+  margin: 0 auto clamp(24px, 3vh, 40px);
+  background: linear-gradient(
+    to right,
+    transparent,
+    var(--gold-deep),
+    transparent
+  );
+  width: clamp(80px, 12vw, 160px);
+}
+.statement-desc {
+  font-family: "Noto Serif TC", serif;
+  font-size: clamp(13px, 1.05vw, 16px);
+  font-weight: 400;
+  line-height: 2.15;
+  letter-spacing: 0.1em;
+  color: var(--charcoal);
+  max-width: 640px;
+  margin: 0 auto clamp(36px, 5vh, 60px);
+}
+.statement-actions {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: clamp(20px, 3vw, 40px);
+  flex-wrap: wrap;
+}
+.hero-statement .btn-primary {
+  background: var(--gold-deep);
+  color: var(--ivory);
+  padding: clamp(14px, 1.4vw, 18px) clamp(36px, 4.5vw, 64px);
+  font-size: clamp(10px, 0.9vw, 13px);
+  letter-spacing: 0.36em;
+  font-weight: 500;
+  border: none;
+}
+.hero-statement .btn-primary:hover {
+  background: var(--gold);
+  color: var(--charcoal);
+  box-shadow: 0 12px 36px rgba(160, 136, 64, 0.35);
+}
+.hero-statement .btn-text {
+  color: var(--gold-deep);
+  font-family: "Noto Serif TC", serif;
+  font-weight: 400;
+  letter-spacing: 0.16em;
+}
+.hero-statement .btn-text:hover {
+  color: var(--charcoal);
+}
+
+/* ── 30-D：Story 雙城敘事段 ──────────────────────────────── */
+.story {
+  padding: clamp(80px, 10vh, 140px) clamp(24px, 6vw, 100px);
+  background:
+    radial-gradient(
+      ellipse at bottom left,
+      rgba(190, 168, 96, 0.06) 0%,
+      transparent 50%
+    ),
+    var(--ivory);
+  border-top: 1px solid rgba(160, 136, 64, 0.18);
+  border-bottom: 1px solid rgba(160, 136, 64, 0.18);
+}
+.story-inner {
+  display: grid;
+  grid-template-columns: 1fr 1.4fr;
+  gap: clamp(40px, 6vw, 96px);
+  max-width: 1400px;
+  margin: 0 auto;
+  align-items: start;
+}
+.story-head .section-title {
+  font-size: clamp(28px, 3.6vw, 52px);
+  letter-spacing: 0.08em;
+  line-height: 1.35;
+}
+.story-body {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(28px, 4vh, 48px);
+}
+.story-lead {
+  font-family: "Noto Serif TC", serif;
+  font-size: clamp(14px, 1.12vw, 17px);
+  font-weight: 400;
+  line-height: 2.1;
+  letter-spacing: 0.06em;
+  color: var(--charcoal);
+  max-width: 560px;
+}
+.story-lead em {
+  font-family: "Noto Serif TC", serif;
+  font-style: normal;
+  font-weight: 500;
+  color: var(--gold-deep);
+  letter-spacing: 0.18em;
+}
+.story-points {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  padding: 0;
+  margin: 0;
+}
+.story-points li {
+  display: grid;
+  grid-template-columns: clamp(48px, 5vw, 72px) 1fr;
+  gap: clamp(20px, 2.5vw, 32px);
+  align-items: baseline;
+  border-bottom: 1px solid rgba(160, 136, 64, 0.18);
+  padding: clamp(20px, 2.6vw, 32px) 0;
+}
+.story-points li:first-child {
+  padding-top: 0;
+}
+.story-points li:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+.story-point-num {
+  font-family: "Cormorant Garamond", "EB Garamond", serif;
+  font-style: italic;
+  font-weight: 500;
+  font-size: clamp(26px, 3vw, 42px);
+  color: var(--gold-deep);
+  line-height: 1;
+  letter-spacing: 0.05em;
+  text-align: right;
+  padding-right: clamp(8px, 1.2vw, 16px);
+  border-right: 1px solid rgba(160, 136, 64, 0.3);
+}
+.story-point-title {
+  font-family: "Noto Serif TC", serif;
+  font-size: clamp(15px, 1.2vw, 18px);
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  color: var(--charcoal);
+  margin-bottom: 6px;
+}
+.story-point-desc {
+  font-family: "Noto Serif TC", serif;
+  font-size: clamp(12px, 0.95vw, 14px);
+  font-weight: 300;
+  line-height: 1.9;
+  letter-spacing: 0.06em;
+  color: var(--grey-deep);
+}
+
+/* ── 30-E：Features 4 欄佈局 ─────────────────────────────── */
+.features-grid.features-grid-4 {
+  grid-template-columns: repeat(4, 1fr);
+  gap: clamp(20px, 2.5vw, 32px);
+  position: relative;
+}
+/* 隱藏 3 欄時的舊分隔線 */
+.features-grid.features-grid-4::before,
+.features-grid.features-grid-4::after {
+  display: none;
+}
+/* 用 background-image 畫出 3 條垂直細金線 */
+.features-grid.features-grid-4 {
+  background-image:
+    linear-gradient(
+      to right,
+      transparent calc(25% - 0.5px),
+      rgba(160, 136, 64, 0.2) calc(25% - 0.5px),
+      rgba(160, 136, 64, 0.2) calc(25% + 0.5px),
+      transparent calc(25% + 0.5px),
+      transparent calc(50% - 0.5px),
+      rgba(160, 136, 64, 0.25) calc(50% - 0.5px),
+      rgba(160, 136, 64, 0.25) calc(50% + 0.5px),
+      transparent calc(50% + 0.5px),
+      transparent calc(75% - 0.5px),
+      rgba(160, 136, 64, 0.2) calc(75% - 0.5px),
+      rgba(160, 136, 64, 0.2) calc(75% + 0.5px),
+      transparent calc(75% + 0.5px)
+    );
+  background-repeat: no-repeat;
+  background-size: 100% 70%;
+  background-position: center;
+}
+.features-grid-4 .feature-num {
+  font-size: clamp(44px, 4.5vw, 76px);
+}
+.features-grid-4 .feature-title {
+  font-size: clamp(14px, 1.1vw, 17px);
+  letter-spacing: 0.22em;
+  line-height: 1.5;
+  min-height: 2.6em;
+}
+.features-grid-4 .feature-desc {
+  font-size: clamp(11px, 0.85vw, 13px);
+  line-height: 2;
+  letter-spacing: 0.06em;
+}
+
+/* ── 30-F：Footer LOGO 與品牌欄重整 ──────────────────────── */
+.footer-brand-col {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.footer-brand-col .footer-brand-zh {
+  margin-bottom: 8px;
+}
+.footer-logo {
+  display: block;
+  width: clamp(180px, 18vw, 240px);
+  height: auto;
+  margin-top: 24px;
+  opacity: 0.9;
+  transition: opacity 0.3s ease;
+}
+.footer-logo:hover {
+  opacity: 1;
+}
+
+/* ── 30-G：RWD ───────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .nav-logo {
+    height: 24px;
+  }
+  .hero-image {
+    aspect-ratio: 16/9;
+  }
+  .hero-statement {
+    padding: 72px 28px;
+  }
+  .statement-frame {
+    max-width: 100%;
+  }
+  .statement-visual {
+    width: 78vw;
+  }
+  .statement-desc br {
+    display: none;
+  }
+  .story {
+    padding: 72px 28px;
+  }
+  .story-inner {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+  .story-head .section-title br {
+    display: none;
+  }
+  .features-grid.features-grid-4 {
+    grid-template-columns: 1fr 1fr;
+    background-image:
+      linear-gradient(
+        to right,
+        transparent calc(50% - 0.5px),
+        rgba(160, 136, 64, 0.22) calc(50% - 0.5px),
+        rgba(160, 136, 64, 0.22) calc(50% + 0.5px),
+        transparent calc(50% + 0.5px)
+      );
+    background-size: 100% 80%;
+  }
+  .footer-logo {
+    width: 200px;
+  }
+}
+
+@media (max-width: 600px) {
+  .nav-logo {
+    height: 20px;
+  }
+  .hero-image {
+    aspect-ratio: 4/3;
+  }
+  .hero-statement {
+    padding: 56px 20px;
+  }
+  .statement-eyebrow {
+    letter-spacing: 0.2em;
+    flex-wrap: wrap;
+    justify-content: center;
+    text-align: center;
+  }
+  .statement-eyebrow::before,
+  .statement-eyebrow::after {
+    width: 20px;
+  }
+  .statement-visual {
+    width: 86vw;
+  }
+  .statement-desc {
+    font-size: 13px;
+    letter-spacing: 0.04em;
+    line-height: 2;
+  }
+  .statement-actions {
+    flex-direction: column;
+    gap: 14px;
+    width: 100%;
+  }
+  .hero-statement .btn-primary {
+    padding: 14px 28px;
+    letter-spacing: 0.2em;
+    width: 100%;
+    max-width: 280px;
+    text-align: center;
+    font-size: 11px;
+  }
+  .story {
+    padding: 56px 20px;
+  }
+  .story-head .section-title {
+    font-size: clamp(22px, 6vw, 30px);
+    letter-spacing: 0.05em;
+  }
+  .story-points li {
+    grid-template-columns: 36px 1fr;
+    gap: 14px;
+    padding: 18px 0;
+  }
+  .story-point-num {
+    font-size: 22px;
+    padding-right: 8px;
+  }
+  .story-point-title {
+    font-size: 14px;
+    letter-spacing: 0.18em;
+  }
+  .features-grid.features-grid-4 {
+    grid-template-columns: 1fr;
+    background-image: none;
+    gap: 28px;
+  }
+  .features-grid-4 .feature-title {
+    min-height: auto;
+  }
+  .footer-logo {
+    width: 200px;
+    margin-top: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .nav-logo {
+    height: 18px;
+  }
+  .nav-brand-zh {
+    font-size: 14px;
+    letter-spacing: 0.18em;
+  }
+}
+
+/* ════════════════════════════════════════════════════════════════
+ * 31. 統一置中標題（Unified Centered Heading）
+ *
+ * 全站 .section-eyebrow + .section-title 標題組合統一呈現：
+ *   英文 eyebrow（含編號）在上 → 中文 title 在下 → 全部置中
+ *
+ * 同時：原本兩欄 grid 的 Features / Story 改為「置中標題 + 下方內容」
+ * 的疊置版型，建立全站一致的視覺節奏。
+ * ════════════════════════════════════════════════════════════════ */
+
+/* ── 31-A：通用 — eyebrow 永遠獨佔一行（不再 inline 並列 title） ── */
+.section-eyebrow {
+  display: flex;
+  width: fit-content;
+  max-width: 100%;
+  flex-wrap: wrap;
+}
+
+/* ── 31-B：通用 — title 強制 block 顯示，獨佔一行 ── */
+.section-title {
+  display: block;
+}
+
+/* ── 31-C：置中容器內，標題群組自動置中 ── */
+.h3-header .section-eyebrow,
+.testimonials > .section-eyebrow,
+.story-head .section-eyebrow,
+.features-inner > .reveal .section-eyebrow {
+  margin-left: auto;
+  margin-right: auto;
+}
+.h3-header .section-title,
+.testimonials .section-title,
+.story-head .section-title,
+.features-inner > .reveal .section-title {
+  text-align: center;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* 置中標題的 eyebrow 統一不顯示左側 ::before 短線，
+   讓 eyebrow-num（01-04）成為唯一裝飾元素，風格更乾淨。 */
+.h3-header .section-eyebrow::before,
+.story-head .section-eyebrow::before,
+.features-inner > .reveal .section-eyebrow::before {
+  display: none;
+}
+
+/* ── 31-D：Features 從 2 欄 grid 改為單欄（標題置中、內容置下） ── */
+.features-inner {
+  grid-template-columns: 1fr;
+  gap: clamp(40px, 6vh, 72px);
+  max-width: 1400px;
+  margin: 0 auto;
+}
+.features-inner > .reveal {
+  text-align: center;
+}
+.features-inner > .reveal .gold-line {
+  margin-left: auto;
+  margin-right: auto;
+}
+.features-inner > .reveal .section-desc {
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 560px;
+  text-align: center;
+}
+.features-inner > .reveal .section-title {
+  font-size: clamp(28px, 3.4vw, 48px);
+  line-height: 1.35;
+}
+
+/* ── 31-E：Story 從 2 欄 grid 改為單欄（標題置中、敘事置中、三點 3 欄） ── */
+.story-inner {
+  grid-template-columns: 1fr;
+  gap: clamp(40px, 5vh, 64px);
+  max-width: 1320px;
+}
+.story-head {
+  text-align: center;
+}
+.story-head .gold-line {
+  margin-left: auto;
+  margin-right: auto;
+}
+.story-head .section-title {
+  font-size: clamp(28px, 3.5vw, 48px);
+  line-height: 1.35;
+}
+.story-body {
+  max-width: 1080px;
+  margin: 0 auto;
+  width: 100%;
+}
+.story-lead {
+  text-align: center;
+  max-width: 720px;
+  margin: 0 auto;
+}
+.story-lead em {
+  letter-spacing: 0.12em;
+}
+
+/* Story 三項里程碑改為水平 3 欄卡片 */
+.story-points {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(20px, 2.5vw, 32px);
+  margin-top: clamp(32px, 5vh, 56px);
+}
+.story-points li {
+  grid-template-columns: 1fr;
+  text-align: center;
+  border-bottom: none;
+  border: 1px solid rgba(160, 136, 64, 0.2);
+  padding: clamp(28px, 3vw, 40px) clamp(16px, 2vw, 24px);
+  background: rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  transition: border-color 0.4s var(--ease-out-expo), background 0.4s ease, transform 0.4s var(--ease-out-expo);
+}
+.story-points li:hover {
+  border-color: rgba(160, 136, 64, 0.5);
+  background: rgba(255, 255, 255, 0.7);
+  transform: translateY(-4px);
+}
+.story-points li:first-child,
+.story-points li:last-child {
+  padding-top: clamp(28px, 3vw, 40px);
+  padding-bottom: clamp(28px, 3vw, 40px);
+}
+.story-points li .story-point-num {
+  text-align: center;
+  border-right: none;
+  border-bottom: 1px solid rgba(160, 136, 64, 0.3);
+  padding: 0 0 14px;
+  margin: 0 auto 20px;
+  width: clamp(36px, 4vw, 56px);
+  display: block;
+  font-size: clamp(28px, 3vw, 44px);
+}
+.story-points li > div {
+  text-align: center;
+}
+
+/* ── 31-F：RWD ─────────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .story-points {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+@media (max-width: 600px) {
+  .story-points {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  .story-points li {
+    flex-direction: row;
+    align-items: center;
+    text-align: left;
+    padding: 20px 18px;
+    gap: 16px;
+  }
+  .story-points li .story-point-num {
+    border-bottom: none;
+    border-right: 1px solid rgba(160, 136, 64, 0.3);
+    padding: 0 14px 0 0;
+    margin: 0;
+    width: auto;
+    flex-shrink: 0;
+    font-size: 24px;
+    line-height: 1;
+  }
+  .story-points li > div {
+    text-align: left;
+  }
+}
+
+/* ════════════════════════════════════════════════════════════════
+ * 32. Utility Class System（類 Bootstrap / Tailwind 工具類）
+ *
+ * 一套輕量級的 utility classes，可直接在 HTML 加上 class 來組合樣式，
+ * 不需要每次都寫新的 CSS。所有 utility class 以 `u-` 前綴，
+ * 避免與既有 class 衝突。
+ *
+ * 間距刻度（Spacing Scale）：
+ *   0 = 0       1 = 4px    2 = 8px    3 = 16px
+ *   4 = 24px    5 = 32px   6 = 48px   7 = 64px   8 = 96px
+ *
+ * 範例：
+ *   <div class="u-mb-5 u-text-center u-text-gold-deep">...</div>
+ *   <p class="u-font-display u-italic u-tracking-wider">Eternal Continuum</p>
+ *
+ * 詳細對照請參閱 README 表格或專案文件。
+ * ════════════════════════════════════════════════════════════════ */
+
+/* ─── 32-A：Margin（外距） ─── */
+.u-m-0 { margin: 0; }
+.u-m-1 { margin: 4px; }
+.u-m-2 { margin: 8px; }
+.u-m-3 { margin: 16px; }
+.u-m-4 { margin: 24px; }
+.u-m-5 { margin: 32px; }
+.u-m-6 { margin: 48px; }
+.u-m-7 { margin: 64px; }
+.u-m-8 { margin: 96px; }
+.u-m-auto { margin: auto; }
+
+.u-mt-0 { margin-top: 0; }
+.u-mt-1 { margin-top: 4px; }
+.u-mt-2 { margin-top: 8px; }
+.u-mt-3 { margin-top: 16px; }
+.u-mt-4 { margin-top: 24px; }
+.u-mt-5 { margin-top: 32px; }
+.u-mt-6 { margin-top: 48px; }
+.u-mt-7 { margin-top: 64px; }
+.u-mt-8 { margin-top: 96px; }
+
+.u-mb-0 { margin-bottom: 0; }
+.u-mb-1 { margin-bottom: 4px; }
+.u-mb-2 { margin-bottom: 8px; }
+.u-mb-3 { margin-bottom: 16px; }
+.u-mb-4 { margin-bottom: 24px; }
+.u-mb-5 { margin-bottom: 32px; }
+.u-mb-6 { margin-bottom: 48px; }
+.u-mb-7 { margin-bottom: 64px; }
+.u-mb-8 { margin-bottom: 96px; }
+
+.u-ml-0 { margin-left: 0; }
+.u-ml-3 { margin-left: 16px; }
+.u-ml-4 { margin-left: 24px; }
+.u-ml-auto { margin-left: auto; }
+.u-mr-0 { margin-right: 0; }
+.u-mr-3 { margin-right: 16px; }
+.u-mr-4 { margin-right: 24px; }
+.u-mr-auto { margin-right: auto; }
+
+.u-mx-auto { margin-left: auto; margin-right: auto; }
+.u-my-3 { margin-top: 16px; margin-bottom: 16px; }
+.u-my-4 { margin-top: 24px; margin-bottom: 24px; }
+.u-my-5 { margin-top: 32px; margin-bottom: 32px; }
+.u-my-6 { margin-top: 48px; margin-bottom: 48px; }
+
+/* ─── 32-B：Padding（內距 — 完整刻度 0-8） ─── */
+.u-p-0 { padding: 0; }
+.u-p-1 { padding: 4px; }
+.u-p-2 { padding: 8px; }
+.u-p-3 { padding: 16px; }
+.u-p-4 { padding: 24px; }
+.u-p-5 { padding: 32px; }
+.u-p-6 { padding: 48px; }
+.u-p-7 { padding: 64px; }
+.u-p-8 { padding: 96px; }
+
+/* 上內距 */
+.u-pt-0 { padding-top: 0; }
+.u-pt-1 { padding-top: 4px; }
+.u-pt-2 { padding-top: 8px; }
+.u-pt-3 { padding-top: 16px; }
+.u-pt-4 { padding-top: 24px; }
+.u-pt-5 { padding-top: 32px; }
+.u-pt-6 { padding-top: 48px; }
+.u-pt-7 { padding-top: 64px; }
+.u-pt-8 { padding-top: 96px; }
+
+/* 下內距 */
+.u-pb-0 { padding-bottom: 0; }
+.u-pb-1 { padding-bottom: 4px; }
+.u-pb-2 { padding-bottom: 8px; }
+.u-pb-3 { padding-bottom: 16px; }
+.u-pb-4 { padding-bottom: 24px; }
+.u-pb-5 { padding-bottom: 32px; }
+.u-pb-6 { padding-bottom: 48px; }
+.u-pb-7 { padding-bottom: 64px; }
+.u-pb-8 { padding-bottom: 96px; }
+
+/* 左內距 */
+.u-pl-0 { padding-left: 0; }
+.u-pl-1 { padding-left: 4px; }
+.u-pl-2 { padding-left: 8px; }
+.u-pl-3 { padding-left: 16px; }
+.u-pl-4 { padding-left: 24px; }
+.u-pl-5 { padding-left: 32px; }
+.u-pl-6 { padding-left: 48px; }
+
+/* 右內距 */
+.u-pr-0 { padding-right: 0; }
+.u-pr-1 { padding-right: 4px; }
+.u-pr-2 { padding-right: 8px; }
+.u-pr-3 { padding-right: 16px; }
+.u-pr-4 { padding-right: 24px; }
+.u-pr-5 { padding-right: 32px; }
+.u-pr-6 { padding-right: 48px; }
+
+/* 水平內距（同時 left + right） */
+.u-px-0 { padding-left: 0; padding-right: 0; }
+.u-px-1 { padding-left: 4px; padding-right: 4px; }
+.u-px-2 { padding-left: 8px; padding-right: 8px; }
+.u-px-3 { padding-left: 16px; padding-right: 16px; }
+.u-px-4 { padding-left: 24px; padding-right: 24px; }
+.u-px-5 { padding-left: 32px; padding-right: 32px; }
+.u-px-6 { padding-left: 48px; padding-right: 48px; }
+.u-px-7 { padding-left: 64px; padding-right: 64px; }
+.u-px-8 { padding-left: 96px; padding-right: 96px; }
+
+/* 垂直內距（同時 top + bottom） */
+.u-py-0 { padding-top: 0; padding-bottom: 0; }
+.u-py-1 { padding-top: 4px; padding-bottom: 4px; }
+.u-py-2 { padding-top: 8px; padding-bottom: 8px; }
+.u-py-3 { padding-top: 16px; padding-bottom: 16px; }
+.u-py-4 { padding-top: 24px; padding-bottom: 24px; }
+.u-py-5 { padding-top: 32px; padding-bottom: 32px; }
+.u-py-6 { padding-top: 48px; padding-bottom: 48px; }
+.u-py-7 { padding-top: 64px; padding-bottom: 64px; }
+.u-py-8 { padding-top: 96px; padding-bottom: 96px; }
+
+/* ─── 32-C：Text alignment（文字對齊） ─── */
+.u-text-left { text-align: left; }
+.u-text-center { text-align: center; }
+.u-text-right { text-align: right; }
+.u-text-justify { text-align: justify; }
+
+/* ─── 32-D：Text color（文字顏色 — 品牌色票） ─── */
+.u-text-gold { color: var(--gold); }
+.u-text-gold-deep { color: var(--gold-deep); }
+.u-text-gold-pale { color: var(--gold-pale); }
+.u-text-charcoal { color: var(--charcoal); }
+.u-text-ink { color: var(--grey-ink); }
+.u-text-grey-dark { color: var(--grey-dark); }
+.u-text-grey-deep { color: var(--grey-deep); }
+.u-text-grey-mid { color: var(--grey-mid); }
+.u-text-ivory { color: var(--ivory); }
+.u-text-white { color: var(--white); }
+
+/* ─── 32-E：Background（背景色） ─── */
+.u-bg-gold { background: var(--gold); }
+.u-bg-gold-deep { background: var(--gold-deep); }
+.u-bg-charcoal { background: var(--charcoal); }
+.u-bg-ink { background: var(--grey-ink); }
+.u-bg-ivory { background: var(--ivory); }
+.u-bg-ivory-soft { background: var(--ivory-soft); }
+.u-bg-white { background: var(--white); }
+.u-bg-transparent { background: transparent; }
+
+/* ─── 32-F：Font family / weight / style（字型） ─── */
+.u-font-serif-tc { font-family: "Noto Serif TC", serif; }
+.u-font-display { font-family: "Cormorant Garamond", "EB Garamond", serif; }
+.u-font-en { font-family: "EB Garamond", serif; }
+.u-italic { font-style: italic; }
+.u-not-italic { font-style: normal; }
+.u-fw-300 { font-weight: 300; }
+.u-fw-400 { font-weight: 400; }
+.u-fw-500 { font-weight: 500; }
+.u-fw-600 { font-weight: 600; }
+
+/* ─── 32-G：Font size（字級） ─── */
+.u-text-xs { font-size: 11px; }
+.u-text-sm { font-size: 13px; }
+.u-text-base { font-size: 15px; }
+.u-text-lg { font-size: 18px; }
+.u-text-xl { font-size: 22px; }
+.u-text-2xl { font-size: 28px; }
+.u-text-3xl { font-size: 36px; }
+.u-text-4xl { font-size: 48px; }
+.u-text-5xl { font-size: 64px; }
+
+/* ─── 32-H：Letter spacing（字距） ─── */
+.u-tracking-tight { letter-spacing: -0.02em; }
+.u-tracking-normal { letter-spacing: 0; }
+.u-tracking-wide { letter-spacing: 0.1em; }
+.u-tracking-wider { letter-spacing: 0.18em; }
+.u-tracking-widest { letter-spacing: 0.32em; }
+.u-tracking-extra { letter-spacing: 0.42em; }
+
+/* ─── 32-I：Line height（行高） ─── */
+.u-leading-none { line-height: 1; }
+.u-leading-tight { line-height: 1.3; }
+.u-leading-normal { line-height: 1.6; }
+.u-leading-relaxed { line-height: 2; }
+.u-leading-loose { line-height: 2.2; }
+
+/* ─── 32-J：Display（顯示模式） ─── */
+.u-d-none { display: none; }
+.u-d-block { display: block; }
+.u-d-inline { display: inline; }
+.u-d-inline-block { display: inline-block; }
+.u-d-flex { display: flex; }
+.u-d-inline-flex { display: inline-flex; }
+.u-d-grid { display: grid; }
+
+/* ─── 32-K：Flexbox ─── */
+.u-flex-row { flex-direction: row; }
+.u-flex-col { flex-direction: column; }
+.u-flex-wrap { flex-wrap: wrap; }
+.u-flex-nowrap { flex-wrap: nowrap; }
+.u-flex-1 { flex: 1; }
+.u-flex-auto { flex: auto; }
+.u-flex-none { flex: none; }
+
+.u-justify-start { justify-content: flex-start; }
+.u-justify-center { justify-content: center; }
+.u-justify-end { justify-content: flex-end; }
+.u-justify-between { justify-content: space-between; }
+.u-justify-around { justify-content: space-around; }
+.u-justify-evenly { justify-content: space-evenly; }
+
+.u-items-start { align-items: flex-start; }
+.u-items-center { align-items: center; }
+.u-items-end { align-items: flex-end; }
+.u-items-baseline { align-items: baseline; }
+.u-items-stretch { align-items: stretch; }
+
+/* ─── 32-L：Gap（flex / grid 間距） ─── */
+.u-gap-0 { gap: 0; }
+.u-gap-1 { gap: 4px; }
+.u-gap-2 { gap: 8px; }
+.u-gap-3 { gap: 16px; }
+.u-gap-4 { gap: 24px; }
+.u-gap-5 { gap: 32px; }
+.u-gap-6 { gap: 48px; }
+
+/* ─── 32-M：Grid（網格欄數） ─── */
+.u-grid-2 { display: grid; grid-template-columns: 1fr 1fr; }
+.u-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); }
+.u-grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); }
+.u-grid-5 { display: grid; grid-template-columns: repeat(5, 1fr); }
+.u-grid-6 { display: grid; grid-template-columns: repeat(6, 1fr); }
+
+/* ─── 32-N：Width / Height / Max-width ─── */
+.u-w-full { width: 100%; }
+.u-w-half { width: 50%; }
+.u-w-auto { width: auto; }
+.u-w-fit { width: fit-content; }
+.u-h-full { height: 100%; }
+.u-h-auto { height: auto; }
+.u-h-screen { height: 100vh; }
+.u-max-w-sm { max-width: 480px; }
+.u-max-w-md { max-width: 680px; }
+.u-max-w-lg { max-width: 880px; }
+.u-max-w-xl { max-width: 1080px; }
+.u-max-w-2xl { max-width: 1280px; }
+.u-max-w-full { max-width: 100%; }
+
+/* ─── 32-O：Border（邊框） ─── */
+.u-border-none { border: none; }
+.u-border { border: 1px solid var(--grey-main); }
+.u-border-gold { border: 1px solid var(--gold); }
+.u-border-gold-deep { border: 1px solid var(--gold-deep); }
+.u-border-charcoal { border: 1px solid var(--charcoal); }
+.u-border-t { border-top: 1px solid var(--grey-main); }
+.u-border-b { border-bottom: 1px solid var(--grey-main); }
+.u-border-l { border-left: 1px solid var(--grey-main); }
+.u-border-r { border-right: 1px solid var(--grey-main); }
+.u-border-t-gold { border-top: 1px solid var(--gold); }
+.u-border-b-gold { border-bottom: 1px solid var(--gold); }
+
+/* ─── 32-P：Border radius（圓角） ─── */
+.u-rounded-none { border-radius: 0; }
+.u-rounded-sm { border-radius: 4px; }
+.u-rounded { border-radius: 8px; }
+.u-rounded-md { border-radius: 12px; }
+.u-rounded-lg { border-radius: 16px; }
+.u-rounded-xl { border-radius: 24px; }
+.u-rounded-full { border-radius: 9999px; }
+
+/* ─── 32-Q：Shadow（box-shadow） ─── */
+.u-shadow-none { box-shadow: none; }
+.u-shadow-sm { box-shadow: var(--shadow-sm); }
+.u-shadow { box-shadow: var(--shadow-md); }
+.u-shadow-lg { box-shadow: var(--shadow-lg); }
+.u-shadow-gold { box-shadow: 0 12px 36px rgba(190, 168, 96, 0.28); }
+
+/* ─── 32-R：Drop-shadow（給 PNG 透明背景圖用） ─── */
+.u-ds-sm { filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.18)); }
+.u-ds-md { filter: drop-shadow(0 8px 24px rgba(0, 0, 0, 0.28)); }
+.u-ds-lg {
+  filter:
+    drop-shadow(0 12px 32px rgba(0, 0, 0, 0.4))
+    drop-shadow(0 4px 10px rgba(0, 0, 0, 0.25));
+}
+.u-ds-gold { filter: drop-shadow(0 12px 32px rgba(190, 168, 96, 0.36)); }
+
+/* ─── 32-R2：Text-shadow（文字陰影 — 用於圖片 / 影片背景上的文字） ─── */
+.u-ts-none { text-shadow: none; }
+.u-ts-sm {
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+.u-ts-md {
+  text-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.45),
+    0 2px 8px rgba(0, 0, 0, 0.25);
+}
+.u-ts-lg {
+  text-shadow:
+    0 1px 4px rgba(0, 0, 0, 0.6),
+    0 2px 12px rgba(0, 0, 0, 0.35);
+}
+.u-ts-xl {
+  text-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.65),
+    0 4px 20px rgba(0, 0, 0, 0.4);
+}
+/* 反向：給淺底深字用（罕用，類似浮雕感） */
+.u-ts-light {
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.5);
+}
+/* 金色光暈：emphasis / luxe */
+.u-ts-gold-glow {
+  text-shadow:
+    0 0 8px rgba(190, 168, 96, 0.5),
+    0 0 24px rgba(190, 168, 96, 0.28);
+}
+
+/* ─── 32-S：Position（定位） ─── */
+.u-relative { position: relative; }
+.u-absolute { position: absolute; }
+.u-fixed { position: fixed; }
+.u-sticky { position: sticky; top: 0; }
+.u-inset-0 { top: 0; right: 0; bottom: 0; left: 0; }
+
+/* ─── 32-T：Overflow ─── */
+.u-overflow-hidden { overflow: hidden; }
+.u-overflow-auto { overflow: auto; }
+.u-overflow-visible { overflow: visible; }
+.u-overflow-x-hidden { overflow-x: hidden; }
+.u-overflow-y-auto { overflow-y: auto; }
+
+/* ─── 32-U：Opacity（透明度） ─── */
+.u-opacity-0 { opacity: 0; }
+.u-opacity-25 { opacity: 0.25; }
+.u-opacity-50 { opacity: 0.5; }
+.u-opacity-75 { opacity: 0.75; }
+.u-opacity-100 { opacity: 1; }
+
+/* ─── 32-V：Cursor ─── */
+.u-cursor-pointer { cursor: pointer; }
+.u-cursor-default { cursor: default; }
+.u-cursor-not-allowed { cursor: not-allowed; }
+
+/* ─── 32-W：Transition（過場動畫） ─── */
+.u-trans { transition: all 0.3s ease; }
+.u-trans-fast { transition: all 0.18s ease; }
+.u-trans-slow { transition: all 0.55s var(--ease-out-expo); }
+
+/* ─── 32-X：Hover micro-interactions（hover 微互動） ─── */
+.u-hover-lift { transition: transform 0.4s var(--ease-out-expo); }
+.u-hover-lift:hover { transform: translateY(-4px); }
+.u-hover-grow { transition: transform 0.4s var(--ease-out-expo); }
+.u-hover-grow:hover { transform: scale(1.04); }
+.u-hover-glow { transition: filter 0.4s ease, box-shadow 0.4s ease; }
+.u-hover-glow:hover {
+  box-shadow: 0 12px 36px rgba(190, 168, 96, 0.32);
+}
+
+/* ════════════════════════════════════════════════════════════════
+ * 33. Brand Components（品牌元件 — 完整可貼上的成品）
+ *
+ * 預先組合好的品牌元件，可直接複製 HTML 範本貼到頁面上使用。
+ * 每個元件都以 `.u-` 為前綴。
+ * ════════════════════════════════════════════════════════════════ */
+
+/* ── 金色短線分隔（給標題下方使用）
+   <span class="u-line-gold"></span> */
+.u-line-gold {
+  display: block;
+  width: 40px;
+  height: 1px;
+  background: var(--gold);
+  margin: 16px 0;
+}
+.u-line-gold-center {
+  display: block;
+  width: 40px;
+  height: 1px;
+  background: var(--gold);
+  margin: 16px auto;
+}
+.u-line-gradient {
+  display: block;
+  width: 100%;
+  max-width: 240px;
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent,
+    var(--gold-deep),
+    transparent
+  );
+  margin: 16px auto;
+  opacity: 0.5;
+}
+
+/* ── 玻璃霧面卡片
+   <div class="u-card-glass">內容</div> */
+.u-card-glass {
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(190, 168, 96, 0.22);
+  padding: 32px;
+  transition:
+    border-color 0.4s var(--ease-out-expo),
+    background 0.4s ease,
+    transform 0.4s var(--ease-out-expo);
+}
+.u-card-glass:hover {
+  background: rgba(255, 255, 255, 0.88);
+  border-color: rgba(160, 136, 64, 0.45);
+  transform: translateY(-4px);
+}
+
+/* ── 金邊裝飾卡片
+   <div class="u-card-gold">內容</div> */
+.u-card-gold {
+  background: var(--ivory);
+  border: 1px solid var(--gold-deep);
+  padding: 32px;
+  position: relative;
+}
+.u-card-gold::before {
+  content: "";
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  right: 6px;
+  bottom: 6px;
+  border: 1px solid rgba(160, 136, 64, 0.3);
+  pointer-events: none;
+}
+
+/* ── 金色實心按鈕
+   <a class="u-btn-gold">立即購買</a> */
+.u-btn-gold {
+  display: inline-block;
+  background: var(--gold-deep);
+  color: var(--ivory);
+  padding: 14px 48px;
+  font-family: "Noto Serif TC", serif;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.32em;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  transition:
+    background 0.3s,
+    box-shadow 0.3s,
+    color 0.3s;
+}
+.u-btn-gold:hover {
+  background: var(--gold);
+  color: var(--charcoal);
+  box-shadow: 0 12px 36px rgba(160, 136, 64, 0.35);
+}
+
+/* ── 金邊空心按鈕（hover 時填滿金色）
+   <a class="u-btn-outline">了解更多</a> */
+.u-btn-outline {
+  display: inline-block;
+  background: transparent;
+  color: var(--charcoal);
+  border: 1px solid var(--gold-deep);
+  padding: 13px 44px;
+  font-family: "Noto Serif TC", serif;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.32em;
+  text-decoration: none;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  transition: color 0.4s ease;
+}
+.u-btn-outline::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--gold-deep);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.5s var(--ease-out-expo);
+  z-index: -1;
+}
+.u-btn-outline:hover { color: var(--ivory); }
+.u-btn-outline:hover::before { transform: scaleX(1); }
+
+/* ── 編號式眉批
+   <p class="u-eyebrow"><span class="u-eyebrow-num">05</span>Section Title</p> */
+.u-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  font-family: "Cormorant Garamond", "EB Garamond", serif;
+  font-style: italic;
+  font-size: 13px;
+  letter-spacing: 0.3em;
+  color: var(--gold-deep);
+  margin-bottom: 20px;
+}
+.u-eyebrow-num {
+  font-weight: 500;
+  font-size: 1.05em;
+  color: var(--gold-deep);
+  padding-right: 6px;
+  border-right: 1px solid rgba(160, 136, 64, 0.35);
+}
+
+/* ── 中文主標題
+   <h2 class="u-title">標題文字</h2> */
+.u-title {
+  font-family: "Noto Serif TC", serif;
+  font-size: clamp(28px, 3.4vw, 48px);
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  color: var(--charcoal);
+  line-height: 1.35;
+  margin-bottom: 20px;
+}
+
+/* ── 區段描述文字
+   <p class="u-desc">敘述文字</p> */
+.u-desc {
+  font-family: "Noto Serif TC", serif;
+  font-size: 15px;
+  font-weight: 300;
+  line-height: 2.1;
+  letter-spacing: 0.06em;
+  color: var(--grey-deep);
+  max-width: 640px;
+}
+
+/* ── 引言（pull quote）
+   <blockquote class="u-quote">引言文字</blockquote> */
+.u-quote {
+  font-family: "Cormorant Garamond", "EB Garamond", serif;
+  font-style: italic;
+  font-size: 22px;
+  line-height: 1.8;
+  letter-spacing: 0.06em;
+  color: var(--charcoal);
+  padding: 24px 32px;
+  border-left: 2px solid var(--gold-deep);
+  background: rgba(255, 255, 255, 0.4);
+}
+
+/* ── 月相分隔（中央月相裝飾，可直接複製貼上）
+   <div class="u-divider-moon">
+     <span></span><span></span>
+     <span class="full"></span>
+     <span></span><span></span>
+   </div> */
+.u-divider-moon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 18px;
+  padding: 56px 24px;
+  background: var(--ivory);
+}
+.u-divider-moon > span {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--gold);
+  opacity: 0.5;
+}
+.u-divider-moon > span.full {
+  width: 16px;
+  height: 16px;
+  background: var(--gold-deep);
+  opacity: 1;
+  box-shadow:
+    0 0 0 1px rgba(160, 136, 64, 0.3),
+    0 0 20px rgba(190, 168, 96, 0.4);
+}
+
+/* ── 編號特色項目（features 風格）
+   <div class="u-feature">
+     <div class="u-feature-num">01</div>
+     <div class="u-feature-line"></div>
+     <h3 class="u-feature-title">標題</h3>
+     <p class="u-feature-desc">說明文字</p>
+   </div> */
+.u-feature {
+  padding: 24px 16px;
+  transition: transform 0.4s var(--ease-out-expo);
+}
+.u-feature:hover { transform: translateY(-4px); }
+.u-feature-num {
+  font-family: "Cormorant Garamond", "EB Garamond", serif;
+  font-style: italic;
+  font-size: 56px;
+  color: var(--gold-deep);
+  opacity: 0.4;
+  line-height: 0.85;
+  margin-bottom: 16px;
+}
+.u-feature-line {
+  width: 24px;
+  height: 1px;
+  background: var(--gold-deep);
+  margin-bottom: 14px;
+  transition: width 0.4s var(--ease-out-expo);
+}
+.u-feature:hover .u-feature-line { width: 48px; }
+.u-feature-title {
+  font-family: "Noto Serif TC", serif;
+  font-size: 16px;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  color: var(--charcoal);
+  margin-bottom: 10px;
+}
+.u-feature-desc {
+  font-family: "Noto Serif TC", serif;
+  font-size: 13px;
+  font-weight: 300;
+  line-height: 2;
+  letter-spacing: 0.04em;
+  color: var(--grey-deep);
+}
+
+/* ── RWD 顯示控制 ── */
+@media (max-width: 900px) {
+  .u-hide-tablet { display: none !important; }
+}
+@media (max-width: 600px) {
+  .u-hide-mobile { display: none !important; }
+  .u-grid-3,
+  .u-grid-4,
+  .u-grid-5,
+  .u-grid-6 { grid-template-columns: 1fr; }
+  .u-grid-2 { grid-template-columns: 1fr; }
+}
+@media (min-width: 601px) {
+  .u-show-mobile-only { display: none !important; }
+}
+
+/* ════════════════════════════════════════════════════════════════
+ * 34. Button Unified Style（全站按鈕統一規範）
+ *
+ * 全站所有 `.btn-primary` 與 `.btn-text` 採用同一視覺語言：
+ *   ▎主按鈕（.btn-primary）：古董金實心填充 + 象牙白文字 + 寬字距
+ *   ▎次按鈕（.btn-text）   ：金色文字 + 右箭頭 →
+ *
+ * 按鈕群組（多個並列時）：
+ *   `.btn-group` / `.hero-actions` / `.statement-actions` / `.h3-cta`
+ *   一律「垂直堆疊 + 置中對齊」（主按鈕在上、次按鈕在下）。
+ *
+ * 深色背景的反相配色：
+ *   在父容器加上 `.dark-bg`，或在按鈕本身加上 `.btn-on-dark`，
+ *   即可切換為「象牙白填充 + 炭黑文字」/「象牙白文字 + 金色 hover」。
+ *
+ * 此 Section 34 寫於最後，會覆蓋前面 Section 06 / 28 / 30 中
+ * 對 `.btn-primary` / `.btn-text` / `.h3-buy` 的定義。
+ * ════════════════════════════════════════════════════════════════ */
+
+/* ── 34-A：主按鈕 .btn-primary（淺底） ───────────────────────── */
+.btn-primary {
+  display: inline-block;
+  background: var(--gold-deep);
+  color: var(--ivory);
+  padding: clamp(14px, 1.4vw, 18px) clamp(40px, 5vw, 64px);
+  font-family: "Noto Serif TC", serif;
+  font-size: clamp(10px, 0.9vw, 13px);
+  font-weight: 500;
+  letter-spacing: 0.32em;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  transition:
+    background 0.35s ease,
+    color 0.35s ease,
+    box-shadow 0.35s ease,
+    transform 0.35s ease;
+}
+.btn-primary:hover {
+  background: var(--gold);
+  color: var(--charcoal);
+  box-shadow: 0 12px 36px rgba(160, 136, 64, 0.35);
+  transform: translateY(-2px);
+}
+/* 保留 Section 23 中 ::after 的光線掃過效果（不必改動） */
+
+/* ── 34-B：次按鈕 .btn-text（金色文字 + 箭頭） ──────────────── */
+.btn-text {
+  color: var(--gold-deep);
+  font-family: "Noto Serif TC", serif;
+  font-size: clamp(11px, 0.95vw, 14px);
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  padding: 8px 4px;
+  transition: color 0.3s, gap 0.3s;
+}
+.btn-text:hover {
+  color: var(--charcoal);
+  gap: 18px;
+}
+.btn-text::after {
+  content: "→";
+  font-style: normal;
+  font-weight: 400;
+  transition: transform 0.3s;
+  display: inline-block;
+}
+
+/* ── 34-C：深色背景反相 ─────────────────────────────────────
+   用法：在父容器（section）加 `.dark-bg`，或按鈕本身加 `.btn-on-dark` */
+.dark-bg .btn-primary,
+.btn-primary.btn-on-dark {
+  background: var(--ivory);
+  color: var(--charcoal);
+}
+.dark-bg .btn-primary:hover,
+.btn-primary.btn-on-dark:hover {
+  background: var(--gold);
+  color: var(--charcoal);
+  box-shadow: 0 12px 36px rgba(218, 217, 214, 0.22);
+}
+.dark-bg .btn-text,
+.btn-text.btn-on-dark {
+  color: var(--ivory);
+}
+.dark-bg .btn-text:hover,
+.btn-text.btn-on-dark:hover {
+  color: var(--gold);
+}
+
+/* ── 34-D：按鈕群組 — 垂直堆疊 + 置中 ───────────────────────── */
+.btn-group,
+.hero-actions,
+.statement-actions,
+.h3-cta {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(14px, 2vh, 22px);
+}
+
+/* ── 34-E：Hero 3 的 .h3-buy 改為使用 .btn-primary 樣式 ────── */
+.h3-buy {
+  background: var(--gold-deep);
+  color: var(--ivory);
+  border: none;
+  padding: clamp(14px, 1.4vw, 18px) clamp(40px, 5vw, 64px);
+  letter-spacing: 0.32em;
+  z-index: auto;
+}
+.h3-buy::before {
+  display: none; /* 移除原本「金底由左滑入」的偽元素，避免疊圖 */
+}
+.h3-buy:hover {
+  background: var(--gold);
+  color: var(--charcoal);
+  box-shadow: 0 12px 36px rgba(160, 136, 64, 0.35);
+  transform: translateY(-2px);
+}
+
+/* ── 34-F：Statement / Hero actions 內部間距微調 ──────────── */
+.statement-actions {
+  margin-top: clamp(24px, 3vh, 36px);
+}
+
+/* ── 34-G：u- 工具別名（讓 utility 文件能對齊全站樣式） ───── */
+.u-btn-gold {
+  /* 延用 .btn-primary 的設計，直接複寫為相同表現 */
+  background: var(--gold-deep);
+  color: var(--ivory);
+  font-family: "Noto Serif TC", serif;
+  font-weight: 500;
+  letter-spacing: 0.32em;
+}
+.u-btn-gold:hover {
+  background: var(--gold);
+  color: var(--charcoal);
+}
+
+/* ── 34-H：手機 RWD ─────────────────────────────────────── */
+@media (max-width: 600px) {
+  .btn-primary {
+    padding: 14px 36px;
+    letter-spacing: 0.22em;
+    font-size: 11px;
+    width: auto;
+    min-width: 220px;
+    max-width: 320px;
+  }
+  .btn-text {
+    font-size: 12px;
+    letter-spacing: 0.14em;
+  }
+  .btn-group,
+  .hero-actions,
+  .statement-actions,
+  .h3-cta {
+    gap: 14px;
+  }
+}
+
+/* ════════════════════════════════════════════════════════════════
+ * 35. Hero 3 月餅展示 — 手機版自動 Slider
+ *
+ * 桌機 / 平板：維持 3×2（或 2 欄）grid 排版
+ * 手機 ≤600px：改為水平 scroll-snap slider + 自動播放（JS 控制）
+ *
+ * 實作方式：CSS scroll-snap 提供原生平滑切換與卡點，
+ *           JS 用 setInterval 每 4.5 秒呼叫 scrollTo 切下一張。
+ * ════════════════════════════════════════════════════════════════ */
+
+/* dots 容器：桌機隱藏，手機顯示 */
+.h3-dots {
+  display: none;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin: 8px auto 28px;
+  padding: 0 24px;
+}
+
+/* slider wrapper — 為箭頭按鈕提供 position 錨點 */
+.h3-slider-wrap {
+  position: relative;
+  width: 100%;
+}
+
+/* 手機版 slider 左右箭頭按鈕（桌機隱藏） */
+.h3-arrow {
+  display: none;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(218, 217, 214, 0.92);
+  border: 1px solid var(--gold-deep);
+  color: var(--gold-deep);
+  font-family: "Cormorant Garamond", "EB Garamond", serif;
+  font-size: 28px;
+  font-weight: 400;
+  line-height: 1;
+  padding: 0 0 4px;
+  cursor: pointer;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  box-shadow: 0 4px 14px rgba(28, 24, 20, 0.14);
+  transition:
+    background 0.3s,
+    color 0.3s,
+    transform 0.2s;
+}
+.h3-arrow:hover {
+  background: var(--gold-deep);
+  color: var(--ivory);
+}
+.h3-arrow:active {
+  transform: translateY(-50%) scale(0.92);
+}
+.h3-arrow-prev { left: 6px; }
+.h3-arrow-next { right: 6px; }
+.h3-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: rgba(160, 136, 64, 0.3);
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition:
+    background 0.3s,
+    transform 0.3s,
+    width 0.3s;
+}
+.h3-dot.active {
+  background: var(--gold-deep);
+  transform: scale(1.3);
+  box-shadow: 0 0 0 1px rgba(160, 136, 64, 0.2);
+}
+.h3-dot:hover {
+  background: var(--gold);
+}
+
+/* ── 手機 ≤600px：改為自動播放的水平 scroll-snap slider ──
+ * 設計重點：
+ *   ▎卡片佔 88% 視窗寬，前後 6% padding 露出鄰張邊緣 → 強化「可滑動」直覺
+ *   ▎圖片放大至 96% 卡片寬度，視覺以月餅為主角
+ *   ▎scroll-snap-align: center + scroll-padding 雙重保證每張完美卡進中央
+ *   ▎tagline 隱藏，meta 區只保留編號 / 中文名 / 副標
+ */
+@media (max-width: 600px) {
+  .h3-showcase {
+    display: flex !important;
+    flex-direction: row !important;
+    /* ⚠ 關鍵：必須 nowrap，否則 88% 卡片放不下會換行變直向堆疊 */
+    flex-wrap: nowrap !important;
+    grid-template-columns: none !important;
+    justify-content: flex-start !important;
+    gap: 0;
+    margin-bottom: 0;
+    padding: 4px 0 20px;
+    /* 透過 scroll-padding 讓 scroll-snap 對齊到「視窗中央 88% 卡片」的中心 */
+    scroll-padding-left: 6%;
+    scroll-padding-right: 6%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    width: 100%;
+    cursor: grab;
+  }
+  .h3-showcase::-webkit-scrollbar {
+    display: none;
+  }
+  .h3-showcase:active {
+    cursor: grabbing;
+  }
+
+  /* 每張卡片：88% 寬，前後 6% 邊距讓鄰張透出，強化滑動感 */
+  .h3-item {
+    flex: 0 0 88% !important;
+    max-width: 88% !important;
+    width: 88% !important;
+    margin: 0 6% !important;
+    padding: 16px 12px !important;
+    scroll-snap-align: center;
+    scroll-snap-stop: always;
+    box-sizing: border-box;
+  }
+
+  /* 顯示 dots 與左右箭頭 */
+  .h3-dots {
+    display: flex;
+  }
+  .h3-arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* 月餅圖片在手機 slider 中放大為視覺主角 */
+  .h3-item img {
+    width: 96%;
+  }
+  /* 編號縮小、不要搶走月餅的鏡頭 */
+  .h3-num {
+    font-size: 20px;
+    margin-bottom: 6px;
+  }
+  /* 簡化文字：只留名稱與英文副標，隱藏 tagline 避免擠壓圖片 */
+  .h3-tagline {
+    display: none;
+  }
+  .h3-name {
+    font-size: 15px;
+    letter-spacing: 0.24em;
+  }
+  .h3-sub {
+    font-size: 11px;
+    letter-spacing: 0.1em;
+  }
+}
+
+/* ════════════════════════════════════════════════════════════════
+ * 36. Mobile Game UX Refinement（手機版轉盤遊戲互動細修）
+ *
+ * 設計方向：延續本案「絲銀灰 × 古董金 × 編輯式精緻款待」基調，
+ * 把手機版兩顆轉動 CTA 重塑為厚度感的「金箔印鈕」，並重新校準
+ * 三欄主視覺的對稱居中，讓手機體驗仍有展冊般的儀式感。
+ *
+ *   · 觸控：min-height 52px、padding 14px → 符合 Apple HIG 44pt+
+ *   · 等寬：flex 1 兩顆並列、視覺對稱、互動分量均等
+ *   · 觸感：垂直漸層金 + 高光 inset + 暗壓 inset → 凹凸壓印感
+ *   · 居中：grid minmax(0,1fr) auto minmax(0,1fr) + 移除位移補償
+ *   · 安全邊距：兩側 padding 避免「羊」「午」生肖大字被裁切
+ * ════════════════════════════════════════════════════════════════ */
+@media (max-width: 900px) {
+  /* 按鈕列：收斂寬度、置中、上下呼吸 */
+  .game-btns-row {
+    width: 100%;
+    max-width: 560px;
+    margin: 0 auto;
+    gap: clamp(10px, 2.5vw, 18px);
+    padding: clamp(12px, 1.6vh, 22px) 16px clamp(8px, 1vh, 14px);
+    box-sizing: border-box;
+  }
+
+  /* 金箔印鈕：等寬撐滿、立體質感、可點觸面積足夠 */
+  .btn-game-action {
+    flex: 1 1 0;
+    min-height: 52px;
+    padding: 14px 16px;
+    font-size: clamp(12px, 3.2vw, 15px);
+    letter-spacing: 0.22em;
+    font-weight: 500;
+    color: #2a261b;
+    background: linear-gradient(180deg, #d8be72 0%, #b89e54 100%);
+    border: 1px solid rgba(74, 56, 16, 0.18);
+    border-radius: 1px;
+    box-shadow:
+      0 1px 0 rgba(255, 240, 200, 0.55) inset,
+      0 -1px 0 rgba(80, 56, 16, 0.18) inset,
+      0 8px 22px rgba(120, 96, 36, 0.28),
+      0 1px 3px rgba(0, 0, 0, 0.22);
+    transition:
+      transform 0.18s cubic-bezier(0.4, 0, 0.2, 1),
+      box-shadow 0.18s cubic-bezier(0.4, 0, 0.2, 1),
+      background 0.22s;
+  }
+  .btn-game-action:active:not(:disabled) {
+    transform: translateY(1px) scale(0.985);
+    background: linear-gradient(180deg, #c4ab63 0%, #a78f4a 100%);
+    box-shadow:
+      0 1px 0 rgba(255, 240, 200, 0.3) inset,
+      0 -1px 0 rgba(80, 56, 16, 0.25) inset,
+      0 3px 8px rgba(120, 96, 36, 0.22);
+  }
+
+  /* 三欄主視覺：對稱欄位 + 兩側安全邊距 */
+  .game-main-row {
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    align-items: center;
+    width: 100%;
+    padding: 0 12px;
+    box-sizing: border-box;
+  }
+
+  /* 移除桌機 translateX 位移，確保左右元素不溢出欄位 */
+  .animal-img,
+  .zodiac-right {
+    transform: none;
+  }
+  .animal-img {
+    justify-self: center;
+  }
+  .zodiac-right {
+    align-items: center;
+  }
+
+  /* 三欄內容比例重新調校：留出畫面兩側呼吸空間 */
+  .animal-img {
+    width: clamp(96px, 20vw, 220px);
+    height: clamp(96px, 20vw, 220px);
+  }
+  .disk-stack-container {
+    width: clamp(280px, 54vw, 520px);
+    height: clamp(280px, 54vw, 520px);
+  }
+  .zodiac-stem {
+    font-size: clamp(38px, 10.5vw, 110px);
+  }
+  .zodiac-animal {
+    font-size: clamp(56px, 16vw, 170px);
+  }
+
+  /* 頂部祝福文字：放大到手機友善尺度，提升可讀性 */
+  .game-top-text {
+    font-size: clamp(11px, 3vw, 14px);
+    padding: 12px 24px 0;
+    gap: 4px 0.4em;
+    letter-spacing: 0.12em;
+  }
+  .gt-highlight {
+    font-size: clamp(16px, 4.4vw, 22px);
+  }
+}
+
+/* ≤600px：直向手機收斂留白與字距 */
+@media (max-width: 600px) {
+  .game-btns-row {
+    gap: 10px;
+    padding: 14px 16px 8px;
+  }
+  .btn-game-action {
+    padding: 13px 12px;
+    font-size: 12.5px;
+    letter-spacing: 0.16em;
+    min-height: 50px;
+  }
+}
+
+/* ≤480px iPhone SE 級：保留觸控可用性，文字略縮 */
+@media (max-width: 480px) {
+  .game-btns-row {
+    gap: 8px;
+    padding: 12px 12px 6px;
+  }
+  .btn-game-action {
+    padding: 12px 8px;
+    font-size: 11.5px;
+    letter-spacing: 0.12em;
+    min-height: 48px;
+  }
+  .game-top-text {
+    font-size: 11px;
+    padding: 10px 16px 0;
+  }
+  .gt-highlight {
+    font-size: 15px;
+  }
+}
+
+/* ════════════════════════════════════════════════════════════════
+ * 37. Hero 1 Mobile · Vertical Editorial Layout
+ *
+ * 手機版轉盤遊戲改為「展冊式垂直閱讀流」——像翻開禮盒從上到下：
+ *
+ *   ┌─────────────────┐
+ *   │   動物印章圖     │   ← 一上（生肖圖移到最上方）
+ *   │  ─────────────  │
+ *   │   轉生肖 按鈕   │   ← 主標「按我 轉一下」/ 副標「生肖」
+ *   │                 │
+ *   │   ╔═══════╗     │
+ *   │   ║ 大轉盤 ║    │   ← 放大箱子，視覺重心
+ *   │   ║ (滿版) ║    │
+ *   │   ╚═══════╝     │
+ *   │                 │
+ *   │   轉祝福 按鈕   │   ← 主標「按我 轉一下」/ 副標「祝福」
+ *   │  ─────────────  │
+ *   │  生肖大字 午馬   │   ← 一下（水平排列）
+ *   │                 │
+ *   │  「祝福您屬⋯」  │   ← 文字在按鈕（與生肖）下方
+ *   └─────────────────┘
+ *
+ * 實作技巧：
+ *   · display: contents 將 .game-main-row / .game-btns-row 結構打平，
+ *     讓 side-panel / 兩顆按鈕 / 轉盤 / top-text 直接成為 .plate-game
+ *     的 flex 子項，再用 order 重新排序，無需動 JS。
+ *   · 按鈕雙行文字：HTML 拆成 .btn-label-main + .btn-label-sub 兩個 span，
+ *     桌機 inline 不變動、手機 column 堆疊。
+ *   · 移除桌機慣性 translateX，改用 fade 進出場（垂直流不需橫向滑動）。
+ * ════════════════════════════════════════════════════════════════ */
+@media (max-width: 900px) {
+  /* .plate-game 改為垂直 flex column，撐滿置中 */
+  .plate-game {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding-bottom: clamp(20px, 4vw, 40px);
+    gap: clamp(10px, 2.4vh, 26px);
+  }
+
+  /* 打平兩個 wrapper，讓底下元素成為 .plate-game 直系子項，
+     可用 order 任意重排 */
+  .game-main-row,
+  .game-btns-row {
+    display: contents;
+  }
+
+  /* 兩側面板現在是直接 flex item，重置佈局 */
+  .side-panel {
+    width: 100%;
+    height: auto;
+    overflow: visible;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .panel-inner,
+  .side-panel-left .panel-inner,
+  .side-panel-right .panel-inner {
+    width: auto;
+    height: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  /* 桌機橫向滑出動畫 → 手機改為單純淡出（垂直流更自然） */
+  .side-panel-left .panel-inner.panel-out,
+  .side-panel-right .panel-inner.panel-out {
+    transform: none;
+    opacity: 0;
+  }
+
+  /* 轉盤包裝層：填滿可用寬度 */
+  .disk-game-wrap {
+    width: 100%;
+    height: auto;
+    padding: 0;
+    justify-self: stretch;
+    align-self: center;
+    display: flex;
+    justify-content: center;
+  }
+
+  /* ── 順序 order：上→下視覺流 ─────────────────────────
+     1 動物圖 ┃ 2 按鈕①轉生肖 ┃ 3 轉盤 ┃ 4 按鈕②轉祝福
+     ┃ 5 生肖大字 ┃ 6 祝福文字
+  ─────────────────────────────────────────────────── */
+  .side-panel-left  { order: 1; }
+  #btnZodiac        { order: 2; }
+  .disk-game-wrap   { order: 3; }
+  #btnBlessing      { order: 4; }
+  .side-panel-right { order: 5; }
+  .game-top-text    { order: 6; }
+  .game-tagline     { order: 7; display: none; }
+
+  /* ── 各元素尺寸調校 ────────────────────────────────── */
+  /* 動物圖：放大成印章主視覺 */
+  .animal-img {
+    width: clamp(180px, 40vw, 360px);
+    height: clamp(180px, 40vw, 360px);
+    transform: none;
+    margin: 0;
+  }
+
+  /* 轉盤箱子：滿版放大，成為畫面重心 */
+  .disk-stack-container {
+    width: clamp(320px, 86vw, 640px);
+    height: clamp(320px, 86vw, 640px);
+    margin: 0 auto;
+  }
+
+  /* 生肖大字：水平並排（午馬 / 杢羊…），縮短佔位、視覺均衡 */
+  .zodiac-right {
+    flex-direction: row;
+    align-items: baseline;
+    justify-content: center;
+    gap: 0.08em;
+    transform: none;
+    padding: 0;
+    line-height: 1;
+  }
+  .zodiac-stem {
+    font-size: clamp(48px, 14vw, 140px);
+    line-height: 1;
+  }
+  .zodiac-animal {
+    font-size: clamp(72px, 22vw, 220px);
+    line-height: 1;
+  }
+  .zodiac-large-en {
+    display: none;
+  }
+
+  /* ── 按鈕（金箔印鈕）：單顆獨立、雙行字體 ─────────────
+     主標「按我 轉一下」小一號低調，
+     副標「生肖 / 祝福」加大加重成為主要識別 */
+  .btn-game-action {
+    width: min(78vw, 380px);
+    flex: 0 0 auto;
+    min-height: 64px;
+    padding: 14px 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    /* 金箔漸層、雙重 inset、編輯式邊框 */
+    background: linear-gradient(180deg, #d8be72 0%, #b89e54 100%);
+    color: #2a261b;
+    border: 1px solid rgba(74, 56, 16, 0.22);
+    border-radius: 1px;
+    box-shadow:
+      0 1px 0 rgba(255, 240, 200, 0.6) inset,
+      0 -1px 0 rgba(80, 56, 16, 0.2) inset,
+      0 10px 28px rgba(120, 96, 36, 0.32),
+      0 1px 3px rgba(0, 0, 0, 0.24);
+    /* 取消上一層的字距，改由 .btn-label-* 各自掌控 */
+    letter-spacing: 0;
+    font-size: 0; /* 防止 inline 空白造成空隙 */
+    line-height: 1;
+  }
+  .btn-game-action:active:not(:disabled) {
+    transform: translateY(1px) scale(0.985);
+    background: linear-gradient(180deg, #c4ab63 0%, #a78f4a 100%);
+    box-shadow:
+      0 1px 0 rgba(255, 240, 200, 0.3) inset,
+      0 -1px 0 rgba(80, 56, 16, 0.28) inset,
+      0 4px 10px rgba(120, 96, 36, 0.22);
+  }
+  .btn-game-action .btn-label-main {
+    display: block;
+    font-family: "Noto Serif TC", serif;
+    font-size: clamp(10px, 2.5vw, 12px);
+    font-weight: 400;
+    letter-spacing: 0.32em;
+    color: rgba(42, 38, 27, 0.62);
+    text-indent: 0.32em; /* 字距導致整體向左偏，補回視覺中心 */
+  }
+  .btn-game-action .btn-label-sub {
+    display: block;
+    font-family: "Noto Serif TC", serif;
+    font-size: clamp(16px, 4.5vw, 22px);
+    font-weight: 600;
+    letter-spacing: 0.5em;
+    color: #221d10;
+    text-indent: 0.5em;
+    margin-top: 2px;
+  }
+  /* 桌機/平板斷點 ≥600 仍維持兩個 span 並排（HTML 空白讓它們之間有間距） */
+
+  /* 按鈕載入光暈動畫期間，禁用 transform 與漸層覆寫，避免閃爍 */
+  .btn-game-action.btn-intro-glow {
+    background: var(--gold);
+  }
+
+  /* ── 祝福文字（下方頌詞）：序文式編排 ─────────────────
+     從上方位置遷移到最底，採義式斜體 + 細字距，
+     成為「展冊頁尾的祝福簽名」氛圍 */
+  .game-top-text {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: baseline;
+    gap: 0 0.4em;
+    margin-top: clamp(8px, 1.6vh, 18px);
+    padding: 0 24px;
+    font-family: "Noto Serif TC", serif;
+    font-size: clamp(12px, 3.2vw, 15px);
+    letter-spacing: 0.18em;
+    color: rgba(255, 245, 220, 0.92);
+    text-align: center;
+    text-shadow:
+      0 1px 4px rgba(0, 0, 0, 0.55),
+      0 2px 12px rgba(0, 0, 0, 0.35);
+  }
+  .gt-highlight {
+    font-size: clamp(17px, 4.6vw, 22px);
+    color: var(--gold);
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    margin: 0 0.04em;
+  }
+}
+
+/* ≤600px：navbar 已隱藏（u-hide-mobile 在 ≤600 觸發），
+   body padding-top 收回 0，hero1 真正滿版自頂端啟動 */
+@media (max-width: 600px) {
+  body {
+    padding-top: 0;
+  }
+  /* 取消 Section 36 的負 margin（navbar 不存在了，不需要補償） */
+  .plate-game {
+    margin-top: 0;
+    padding-top: clamp(20px, 4vw, 36px);
+  }
+  /* （舊版 ≤600px 對 .animal-img / .disk-stack-container 的縮小覆寫
+     已移除，由 Section 39 的 2x 尺寸接管） */
+}
+
+/* ≤480px iPhone SE 級：再收緊 */
+@media (max-width: 480px) {
+  .btn-game-action {
+    width: min(82vw, 320px);
+    min-height: 58px;
+    padding: 12px 20px;
+  }
+  .btn-game-action .btn-label-main {
+    font-size: 10.5px;
+    letter-spacing: 0.28em;
+  }
+  .btn-game-action .btn-label-sub {
+    font-size: 17px;
+    letter-spacing: 0.42em;
+    text-indent: 0.42em;
+  }
+  /* （舊版 ≤480px 對 .animal-img 的縮小覆寫已移除，
+     由 Section 39 的 2x 尺寸接管） */
+  .zodiac-stem {
+    font-size: 13.5vw;
+  }
+  .zodiac-animal {
+    font-size: 20vw;
+  }
+  .game-top-text {
+    font-size: 12px;
+    padding: 0 18px;
+  }
+  .gt-highlight {
+    font-size: 16px;
+  }
+}
+
+/* ════════════════════════════════════════════════════════════════
+ * 38. Hero 1 Mobile · 「藏月無境」副標 + 分享按鈕
+ *
+ * 在 Section 37 垂直版面之上再追加兩個手機專屬元素：
+ *   · .gt-tagline-mobile  — 文字第二行詩意 tagline
+ *   · .btn-game-share     — 第三顆按鈕（次階金邊輪廓 + share icon）
+ *
+ * 設計方向：
+ *   · tagline 走「義式手寫頌詞」氣質：金色斜體、細字距、上下細線裝飾
+ *   · share 按鈕為「次階」視覺層級，與兩顆主轉動按鈕拉開比重
+ *     （金色輪廓而非實心填充、寬度略窄、icon + 文字）
+ *   · 桌機（>900px）兩者皆隱藏，不影響原桌機版面
+ * ════════════════════════════════════════════════════════════════ */
+
+/* 桌機預設：藏月無境 tagline 與分享按鈕皆不顯示 */
+.gt-tagline-mobile {
+  display: none;
+}
+.btn-game-share {
+  display: none;
+}
+
+@media (max-width: 900px) {
+  /* ── 手機版隱藏動態祝福詞（#gtBlessing），由 .gt-tagline-mobile
+     的「藏月無境」接續顯示在第二行（轉祝福按鈕仍保留視覺旋轉互動） */
+  .game-top-text .gt-blessing {
+    display: none;
+  }
+
+  /* ── 文字第二行：藏月無境 ─────────────────────────────────
+     強制換行（display: block + width: 100%）讓它落在
+     「祝福您屬 X 的朋友」下方獨佔一行；
+     上方加細金線分隔，營造手抄頌詞質感 */
+  .gt-tagline-mobile {
+    display: block;
+    width: 100%;
+    flex-basis: 100%;       /* flex container 內強制換行 */
+    margin: clamp(8px, 1.4vh, 14px) auto 0;
+    padding: clamp(6px, 1.2vh, 12px) 0 2px;
+    font-family: "Noto Serif TC", serif;
+    font-size: clamp(15px, 4.2vw, 20px);
+    font-weight: 500;
+    letter-spacing: 0.42em;
+    text-indent: 0.42em;     /* 字距導致左偏，補回視覺中心 */
+    color: var(--gold);
+    text-align: center;
+    text-shadow:
+      0 1px 4px rgba(0, 0, 0, 0.55),
+      0 2px 14px rgba(0, 0, 0, 0.32);
+    /* 上方細金線（::before）營造章節分隔感 */
+    position: relative;
+  }
+  .gt-tagline-mobile::before {
+    content: "";
+    display: block;
+    width: 32px;
+    height: 1px;
+    margin: 0 auto 10px;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(190, 168, 96, 0.6) 50%,
+      transparent 100%
+    );
+  }
+
+  /* ── 分享按鈕：次階金邊輪廓 ─────────────────────────────────
+     設計層級對比兩顆主按鈕（金箔填充）：
+       主按鈕：實心金箔印鈕（轉生肖 / 轉祝福）
+       次按鈕：金邊輪廓 + 半透底（分享）
+     使用 order: 8 排到祝福文字下方 */
+  .btn-game-share {
+    order: 8;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: min(72vw, 340px);
+    min-height: 50px;
+    margin: clamp(12px, 2.4vh, 22px) auto 0;
+    padding: 12px 22px;
+    background: rgba(28, 24, 20, 0.32);
+    color: var(--gold);
+    border: 1px solid rgba(190, 168, 96, 0.62);
+    border-radius: 1px;
+    font-family: "Noto Serif TC", serif;
+    font-size: clamp(12px, 3vw, 14px);
+    font-weight: 500;
+    letter-spacing: 0.28em;
+    text-indent: 0.28em;
+    cursor: pointer;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    box-shadow:
+      0 1px 0 rgba(255, 240, 200, 0.08) inset,
+      0 6px 18px rgba(0, 0, 0, 0.28);
+    transition:
+      background 0.22s ease,
+      border-color 0.22s ease,
+      transform 0.18s cubic-bezier(0.4, 0, 0.2, 1),
+      box-shadow 0.22s ease;
+  }
+  .btn-game-share:hover {
+    background: rgba(190, 168, 96, 0.18);
+    border-color: rgba(190, 168, 96, 0.85);
+  }
+  .btn-game-share:active {
+    transform: translateY(1px) scale(0.985);
+    box-shadow:
+      0 1px 0 rgba(255, 240, 200, 0.04) inset,
+      0 2px 8px rgba(0, 0, 0, 0.22);
+  }
+  .btn-share-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+  }
+  .btn-share-icon svg {
+    width: 100%;
+    height: 100%;
+  }
+  .btn-share-label {
+    display: inline-block;
+    line-height: 1;
+  }
+}
+
+/* ≤480px 進一步收緊 */
+@media (max-width: 480px) {
+  .gt-tagline-mobile {
+    font-size: 16px;
+    letter-spacing: 0.36em;
+    text-indent: 0.36em;
+  }
+  .btn-game-share {
+    width: min(82vw, 300px);
+    min-height: 46px;
+    font-size: 12px;
+    letter-spacing: 0.22em;
+    text-indent: 0.22em;
+    padding: 10px 16px;
+    gap: 8px;
+  }
+}
+
+/* ════════════════════════════════════════════════════════════════
+ * 39. Hero 1 Mobile · Compact Horizontal Layout（取代 Section 37）
+ *
+ * 依使用者新版手機示意圖重新編排：
+ *
+ *   ┌─────────────────────────┐
+ *   │  navbar (顯示)            │
+ *   ├─────────────────────────┤
+ *   │  為您生命中…客製一份祝福。 │  ← tagline 中英文（手機版要顯示）
+ *   │  A bespoke blessing…       │
+ *   ├─────────────────────────┤
+ *   │                          │
+ *   │  🟡   ╔════════╗   未    │  ← 主視覺三欄並排，
+ *   │ 動物  ║ 大轉盤 ║   羊    │     轉盤放大超出畫面邊緣亦無妨
+ *   │       ╚════════╝         │
+ *   │                          │
+ *   ├─────────────────────────┤
+ *   │  祝福您屬 羊 的朋友 心光相映│ ← top text 一行
+ *   ├─────────────────────────┤
+ *   │  ┌───────┐  ┌───────┐    │
+ *   │  │按我轉一│  │按我轉一│   │  ← 兩主按鈕並排（gold印鈕）
+ *   │  │  生肖  │  │  祝福  │   │
+ *   │  └───────┘  └───────┘    │
+ *   │  ┌────────────────────┐  │
+ *   │  │ 分享你的祝福給好友   │ │  ← 分享按鈕（寬版單列）
+ *   │  └────────────────────┘  │
+ *   └─────────────────────────┘
+ *
+ * 撤回事項：
+ *   · display: contents 結構打平 → 改回原生 grid + flex 結構
+ *   · order 重排 → 採用 CSS order 但保留各 wrapper
+ *   · #gtBlessing 隱藏 → 重新顯示動態祝福詞
+ *   · .game-tagline 隱藏 → 重新顯示
+ *   · .plate-game 負 margin / padding-top var(--nav-h) → 取消（navbar 顯示中）
+ *   · panel-out 改 fade → 維持 fade 不要再橫向滑動
+ * ════════════════════════════════════════════════════════════════ */
+@media (max-width: 900px) {
+  /* ── navbar 透明化：LOGO 浮在 plate-game 影片背景上，
+     不再有底色色塊與 backdrop-filter
+     body padding-top 收回 0，讓 plate-game 從視窗最頂端展開
+     由 plate-game 內部 padding-top 把內容推到 LOGO 區下方 */
+  body {
+    padding-top: 0;
+  }
+  .site-nav {
+    background: transparent;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    border-bottom: none;
+    box-shadow: none;
+  }
+
+  /* Hero 2A 禮盒大圖：移除「Scroll to explore」文字覆層
+     — 不在箱子上疊文字 */
+  .hero.hero-image .scroll-hint {
+    display: none;
+  }
+
+  /* LOGO 加上柔和陰影提升在影片背景上的可讀性 */
+  .site-nav .footer-logo {
+    filter:
+      drop-shadow(0 2px 6px rgba(0, 0, 0, 0.35))
+      drop-shadow(0 1px 2px rgba(0, 0, 0, 0.25));
+  }
+  /* LOGO 在 navbar 區內往上偏，靠近頂端 */
+  .nav-inner {
+    justify-content: flex-start;
+    padding-top: clamp(8px, 1.6vh, 18px);
+    padding-bottom: 0;
+  }
+
+  /* ── plate-game：以 CSS Grid template-areas 重新編排
+     讓動物印章 + 生肖大字（未羊）可從箱子內抽出來、
+     放到 tagline 與主按鈕之間
+     箱子（disk-game-wrap）置於最末端只放轉盤本體 ── */
+  .plate-game {
+    margin-top: 0;
+    /* 使用者要求：整體物件往上移 → padding-top 從 var(--nav-h) 收緊到
+       僅保留 LOGO 高度，所有內容整體上移 */
+    padding-top: clamp(80px, 12vh, 110px);
+    padding-bottom: clamp(12px, 2vh, 24px);
+    aspect-ratio: auto;
+    min-height: 0;
+    display: grid;
+    /* minmax(0, 1fr) 讓欄寬可縮至 0 → 箱子放大超出畫面時不會撐開欄位 */
+    grid-template-columns: minmax(0, 1fr);
+    /* 使用者要求順序：tagline → 印章 → 結果文字 → 主按鈕
+                    → 分享 → 箱子（生肖名稱於手機版移除） */
+    grid-template-areas:
+      "tagline"
+      "animal"
+      "text"
+      "btns"
+      "share"
+      "box";
+    /* 使用者要求：下方物件往上移 → row-gap 收緊一半 */
+    row-gap: clamp(4px, 0.8vh, 10px);
+    justify-items: center;
+    align-items: center;
+  }
+
+  /* ── 打平 game-main-row：讓 side-panel-left / disk-game-wrap /
+     side-panel-right 成為 .plate-game 的直系 grid 子項，
+     即可用 grid-area 任意指派位置 ── */
+  .game-main-row {
+    display: contents;
+  }
+  .game-btns-row {
+    grid-area: btns;
+    position: relative;
+    z-index: 5;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: nowrap;
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    padding: 0 clamp(12px, 4vw, 24px);
+    gap: clamp(8px, 2vw, 16px);
+  }
+
+  /* ── 顯示 tagline（撤回 display: none）── */
+  .game-tagline {
+    display: block;
+    grid-area: tagline;
+    width: 100%;
+    position: relative;
+    z-index: 5;
+    padding: clamp(8px, 1.6vh, 16px) clamp(16px, 5vw, 28px) clamp(4px, 0.8vh, 10px);
+    text-align: center;
+    color: #fff; /* 使用者要求：白色文字 */
+  }
+  .game-tagline p {
+    font-family: "Noto Serif TC", serif;
+    font-size: clamp(12px, 3.2vw, 15px);
+    line-height: 1.5;
+    letter-spacing: 0.06em;
+    color: #fff; /* 使用者要求：白色文字 */
+    text-shadow: none; /* 使用者要求：tagline 不要陰影 */
+    margin: 0;
+  }
+  .game-tagline .tagline-en {
+    font-family: "EB Garamond", "Cormorant Garamond", serif;
+    font-style: italic;
+    font-size: clamp(11px, 3vw, 14px);
+    letter-spacing: 0.06em;
+    margin-top: 2px;
+    color: #fff; /* 使用者要求：白色文字 */
+  }
+
+  /* ── 顯示動態祝福詞（撤回隱藏） ── */
+  .game-top-text .gt-blessing {
+    display: inline;
+  }
+
+  /* ── grid-area 指派：每個元素的最終位置 ──
+     使用者要求順序：tagline → 印章（置中） → 主按鈕
+                    → 分享 → 結果文字 → 箱子
+     生肖名稱（.side-panel-right）在手機版隱藏 */
+  .side-panel-left  { grid-area: animal; }
+  /* .game-btns-row grid-area 已於上方設定 */
+  .btn-game-share   { grid-area: share; }
+  .game-top-text    { grid-area: text; }
+  .disk-game-wrap   { grid-area: box; }
+
+  /* ── 動物印章區（grid 第二列，置中橫跨整行） ── */
+  .side-panel-left {
+    position: static;
+    width: 100%;
+    height: auto;
+    overflow: visible;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0 clamp(8px, 3vw, 24px);
+  }
+  /* ── 生肖大字區：手機版移除，箱子下方仍可顯示動態生肖 ── */
+  .side-panel-right {
+    display: none;
+  }
+
+  .panel-inner,
+  .side-panel-left .panel-inner,
+  .side-panel-right .panel-inner {
+    width: auto;
+    height: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  /* panel-out 改 fade（不再橫向滑動，視覺乾淨） */
+  .side-panel-left .panel-inner.panel-out,
+  .side-panel-right .panel-inner.panel-out {
+    transform: none;
+    opacity: 0;
+  }
+
+  /* ── 轉盤：grid 最末區（box）獨佔，純粹只放轉盤本體
+     用 absolute + translate(-50%, -50%) 強制精準置中，
+     避免 flex 居中在「子元素遠大於父元素」時某些瀏覽器產生偏移 ── */
+  .disk-game-wrap {
+    position: relative; /* 讓內部 absolute 子元素以此為定位基準 */
+    width: 100%;
+    /* 高度匹配轉盤直徑，讓 absolute 子元素能 translate(-50%, -50%) 完美置中 */
+    height: clamp(760px, 190vw, 1900px);
+    padding: 0;
+    pointer-events: auto;
+  }
+  .disk-stack-container {
+    /* 使用者要求：放大兩倍，允許超過版面（plate-game overflow:hidden 會
+       自動把超出視窗的部分裁切）
+       absolute + 50% top/left + translate(-50%, -50%) 是大尺寸元素
+       「絕對置中」的最可靠寫法，不受 flex / grid 邊界誤差影響 */
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: clamp(760px, 190vw, 1900px);
+    height: clamp(760px, 190vw, 1900px);
+    margin: 0;
+    pointer-events: auto;
+  }
+  .animal-img {
+    /* 使用者要求：印章再縮小 1/3（再 × 2/3） */
+    width: clamp(67px, 32vw, 249px);
+    height: clamp(67px, 32vw, 249px);
+    transform: none;
+    filter:
+      drop-shadow(0 10px 24px rgba(0, 0, 0, 0.5))
+      drop-shadow(0 3px 8px rgba(0, 0, 0, 0.35));
+  }
+  .zodiac-right {
+    flex-direction: column;
+    align-items: center;
+    transform: none;
+    gap: 0;
+    line-height: 0.85;
+  }
+  .zodiac-stem {
+    font-size: clamp(48px, 14vw, 150px);
+  }
+  .zodiac-animal {
+    font-size: clamp(72px, 20vw, 220px);
+  }
+  .zodiac-large-en {
+    display: none;
+  }
+
+  /* ── 結果文字（祝福您屬 X 的朋友 Y） ── */
+  .game-top-text {
+    width: 100%;
+    position: relative;
+    z-index: 5;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: baseline;
+    gap: 2px 0.32em;
+    margin: 0;
+    padding: 0 24px;
+    font-family: "Noto Serif TC", serif;
+    font-size: clamp(12px, 3.2vw, 15px);
+    letter-spacing: 0.16em;
+    color: rgba(255, 245, 220, 0.96);
+    text-align: center;
+    text-shadow:
+      0 1px 4px rgba(0, 0, 0, 0.55),
+      0 2px 12px rgba(0, 0, 0, 0.35);
+  }
+  .gt-highlight {
+    font-size: clamp(17px, 4.8vw, 24px);
+    color: var(--gold);
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    margin: 0 0.04em;
+  }
+
+  /* ── 兩主按鈕：並排（撤回 Section 37 的單顆獨立 width） ── */
+  .btn-game-action {
+    flex: 1 1 0;
+    width: auto;
+    min-height: 56px;
+    padding: 10px 14px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    background: linear-gradient(180deg, #d8be72 0%, #b89e54 100%);
+    color: #2a261b;
+    border: 1px solid rgba(74, 56, 16, 0.22);
+    border-radius: 1px;
+    box-shadow:
+      0 1px 0 rgba(255, 240, 200, 0.55) inset,
+      0 -1px 0 rgba(80, 56, 16, 0.2) inset,
+      0 6px 18px rgba(120, 96, 36, 0.28),
+      0 1px 3px rgba(0, 0, 0, 0.22);
+    letter-spacing: 0;
+    font-size: 0; /* 防止 inline span 間的空白渲染 */
+    line-height: 1;
+    transition:
+      transform 0.18s cubic-bezier(0.4, 0, 0.2, 1),
+      box-shadow 0.18s ease,
+      background 0.22s;
+  }
+  .btn-game-action .btn-label-main {
+    display: block;
+    font-family: "Noto Serif TC", serif;
+    font-size: clamp(9.5px, 2.4vw, 11.5px);
+    font-weight: 400;
+    letter-spacing: 0.24em;
+    text-indent: 0.24em;
+    color: rgba(42, 38, 27, 0.62);
+  }
+  .btn-game-action .btn-label-sub {
+    display: block;
+    font-family: "Noto Serif TC", serif;
+    font-size: clamp(14px, 4vw, 19px);
+    font-weight: 600;
+    letter-spacing: 0.42em;
+    text-indent: 0.42em;
+    color: #221d10;
+    margin-top: 2px;
+  }
+  .btn-game-action:active:not(:disabled) {
+    transform: translateY(1px) scale(0.985);
+    background: linear-gradient(180deg, #c4ab63 0%, #a78f4a 100%);
+  }
+
+  /* ── 分享按鈕：寬版單列（與主按鈕同寬），grid 第四列 ── */
+  .btn-game-share {
+    position: relative;
+    z-index: 5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: calc(100% - clamp(24px, 8vw, 48px));
+    max-width: 720px;
+    min-height: 50px;
+    margin: 0 auto;
+    padding: 12px 22px;
+    background: linear-gradient(180deg, #d8be72 0%, #b89e54 100%);
+    color: #2a261b;
+    border: 1px solid rgba(74, 56, 16, 0.22);
+    border-radius: 1px;
+    font-family: "Noto Serif TC", serif;
+    font-size: clamp(13px, 3.4vw, 16px);
+    font-weight: 600;
+    letter-spacing: 0.34em;
+    text-indent: 0.34em;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    box-shadow:
+      0 1px 0 rgba(255, 240, 200, 0.55) inset,
+      0 -1px 0 rgba(80, 56, 16, 0.2) inset,
+      0 8px 22px rgba(120, 96, 36, 0.28),
+      0 1px 3px rgba(0, 0, 0, 0.22);
+    cursor: pointer;
+    transition:
+      transform 0.18s cubic-bezier(0.4, 0, 0.2, 1),
+      box-shadow 0.18s ease,
+      background 0.22s;
+  }
+  .btn-game-share:hover {
+    background: linear-gradient(180deg, #e0c578 0%, #c0a55a 100%);
+  }
+  .btn-game-share:active {
+    transform: translateY(1px) scale(0.992);
+    background: linear-gradient(180deg, #c4ab63 0%, #a78f4a 100%);
+  }
+  .btn-share-icon {
+    color: #2a261b;
+  }
+  .btn-share-label {
+    color: #221d10;
+  }
+}
+
+/* ≤600px 直向手機：保持同一布局、字級略縮
+   body padding-top 維持 0（navbar 透明，LOGO 浮在 plate-game 上） */
+@media (max-width: 600px) {
+  .game-tagline {
+    padding: 8px 18px 4px;
+  }
+  .game-tagline p {
+    font-size: 12.5px;
+    line-height: 1.5;
+  }
+  .game-tagline .tagline-en {
+    font-size: 11px;
+  }
+  .game-top-text {
+    font-size: 12.5px;
+    padding: 0 16px;
+  }
+  .gt-highlight {
+    font-size: 18px;
+  }
+  .btn-game-action {
+    min-height: 52px;
+    padding: 8px 10px;
+  }
+  .btn-game-action .btn-label-main {
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-indent: 0.2em;
+  }
+  .btn-game-action .btn-label-sub {
+    font-size: 15px;
+    letter-spacing: 0.34em;
+    text-indent: 0.34em;
+  }
+  .btn-game-share {
+    min-height: 46px;
+    font-size: 13px;
+    letter-spacing: 0.26em;
+    text-indent: 0.26em;
+  }
+}
+
+/* ≤480px iPhone SE 級：再緊縮 */
+@media (max-width: 480px) {
+  .game-tagline p { font-size: 11.5px; }
+  .game-tagline .tagline-en { font-size: 10px; }
+  .game-top-text { font-size: 11.5px; }
+  .gt-highlight  { font-size: 16px; }
+  .btn-game-action {
+    min-height: 50px;
+    padding: 7px 8px;
+  }
+  .btn-game-action .btn-label-main { font-size: 9.5px; letter-spacing: 0.16em; text-indent: 0.16em; }
+  .btn-game-action .btn-label-sub  { font-size: 14px;  letter-spacing: 0.28em; text-indent: 0.28em; }
+  .btn-game-share {
+    min-height: 44px;
+    font-size: 12px;
+    letter-spacing: 0.2em;
+    text-indent: 0.2em;
+    padding: 10px 14px;
+    width: calc(100% - 24px);
+  }
+  /* （舊版 ≤480px iPhone SE 對 .animal-img 的縮小覆寫已移除，
+     由 Section 39 的 2x 尺寸接管） */
+  .zodiac-stem   { font-size: 11.5vw; }
+  .zodiac-animal { font-size: 18vw; }
+}

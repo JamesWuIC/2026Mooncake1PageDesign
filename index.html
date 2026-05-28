@@ -1,0 +1,890 @@
+<!doctype html>
+<html lang="zh-TW">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0"
+    />
+    <title>2026 中秋月餅禮盒</title>
+
+    <!--
+      ══════════════════════════════════════════════════════
+      Google Fonts 字型載入
+      ──────────────────────────────────────────────────────
+      使用兩種字型：
+        · EB Garamond  → 英文標題、斜體裝飾文字（.en / .en-italic）
+        · Noto Serif TC → 全站中文正文與標題
+      調整字重：修改 URL 中的 wght 參數，例如加入 600 字重。
+      ══════════════════════════════════════════════════════
+    -->
+    <link
+      rel="preconnect"
+      href="https://fonts.googleapis.com"
+    />
+    <link
+      rel="preconnect"
+      href="https://fonts.gstatic.com"
+      crossorigin
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=Noto+Serif+TC:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+
+    <!--
+      ══════════════════════════════════════════════════════
+      全站樣式表
+      路徑：css/style.css
+      ══════════════════════════════════════════════════════
+    -->
+    <link
+      rel="stylesheet"
+      href="css/style.css"
+    />
+  </head>
+
+  <body>
+    <!-- ══════════════════════════════════════════════════
+         固定導覽列（Site Navigation）
+         ── nav-brand   → 品牌名稱，點擊回到轉盤遊戲
+         ── nav-links   → 頁內錨點導覽（平板以下隱藏）
+         ── nav-cta     → 立即預訂按鈕
+    ══════════════════════════════════════════════════ -->
+    <nav
+      class="site-nav"
+      id="siteNav"
+    >
+
+      <div class="nav-inner">
+        <a
+          class="nav-logo-link"
+          href="#game"
+          aria-label="返回頂端"
+        >
+          <img
+            class="footer-logo"
+            src="images/07_LOGO/ICLOGOPNG-12.png"
+            alt="InterContinental Kaohsiung 高雄洲際酒店"
+          />
+        </a>
+        <!-- <div class="nav-links">
+          <a
+            class="nav-link"
+            href="#game"
+            >轉盤遊戲</a
+          >
+          <a
+            class="nav-link"
+            href="#products"
+            >禮盒系列</a
+          >
+          <a
+            class="nav-link"
+            href="#features"
+            >品牌理念</a
+          >
+          <a
+            class="nav-link"
+            href="#testimonials"
+            >口碑評語</a
+          >
+        </div> -->
+       
+      </div>
+    </nav>
+
+    <!--
+      ══════════════════════════════════════════════════════
+      公告列（Announcement Bar）
+      ──────────────────────────────────────────────────────
+      目前已註解隱藏，需要時移除 HTML 註解符號即可顯示。
+      調整文字：直接修改 <em> 標籤內的活動名稱與正文內容。
+      ══════════════════════════════════════════════════════
+    -->
+    <!-- <div class="announce-bar">
+      <em>Mid-Autumn 2026</em> &nbsp;·&nbsp; 月餅禮盒現正預購 &nbsp;·&nbsp; 滿 $2,000 免運 &nbsp;·&nbsp; 精裝禮盒可客製刻字
+    </div> -->
+
+    <!--
+      ══════════════════════════════════════════════════════
+      hero_1：生肖轉盤互動遊戲（Fortune Wheel Game）
+      ──────────────────────────────────────────────────────
+      結構說明：
+        .game-top-text    → 頂部祝福文字列
+        .game-btns-row    → 「轉生肖」與「轉祝福」兩顆按鈕
+        .game-main-row    → 三欄：生肖插圖 | 轉盤 | 生肖大字
+        .game-tagline     → 底部說明文字
+
+      轉盤圖層（Layer1～5 疊合）：
+        gL1 → 底座底圖（靜止）
+        gL2 → 生肖外盤（spinOuter 旋轉）
+        gL3 → 裝飾環（靜止）
+        gL4 → 祝福內盤（spinInner 旋轉）
+        gL5 → 最上層裝飾（靜止）
+
+      更換背景圖：改 style.css .plate-game 的 background url。
+      更換轉盤圖：替換 images/05_Plate_Roll/ 資料夾的圖檔。
+      更換生肖圖：替換 images/06_Animal/ 資料夾的圖檔，
+                  並更新 script.js zodiacData 每筆的 img 路徑。
+      初始顯示的生肖：改此處 #animalImg src、alt，
+                       以及 #zodiacStem / #zodiacAnimal / #zodiacLargeEn 的初始文字，
+                       同時確認 gOuterStep 起始值與 zodiacData[0] 對應。
+      ══════════════════════════════════════════════════════
+    -->
+    <section
+      class="plate-game"
+      id="game"
+    >
+      
+            
+      <video
+        class="plate-game-video"
+        src="04_MP4/20260520_2026MC_BGVideo.mp4"
+        autoplay
+        loop
+        muted
+        playsinline
+      ></video>
+      <!-- 頂部文字：「祝福您屬 [生肖] 的朋友 [祝福詞]」
+           gtZodiac 與 gtBlessing 的文字由 JS 動態更新 -->
+      <div
+        class="game-top-text"
+        id="gameTopText"
+      >
+        <span>祝福您屬</span>
+        <span
+          class="gt-highlight"
+          id="gtZodiac"
+          >馬</span
+        >
+        <span>的朋友</span>
+        <span
+          class="gt-highlight gt-blessing"
+          id="gtBlessing"
+          >平安相伴</span
+        >
+      </div>
+
+      <!-- 操作按鈕列
+           onclick 分別呼叫 script.js 的 spinOuter() / spinInner()
+           桌機：兩顆按鈕並排 / 手機：分上下夾住中央轉盤
+           按鈕文字拆成主標（.btn-label-main）＋副標（.btn-label-sub），
+           手機版會以兩行呈現：「按我 轉一下」/「生肖 | 祝福」 -->
+      <div class="game-btns-row">
+        <button
+          class="btn-game-action"
+          id="btnZodiac"
+          onclick="spinOuter()"
+        ><span class="btn-label-main">按我 轉一下</span> <span class="btn-label-sub">生肖</span></button>
+        <button
+          class="btn-game-action"
+          id="btnBlessing"
+          onclick="spinInner()"
+        ><span class="btn-label-main">按我 轉一下</span> <span class="btn-label-sub">祝福</span></button>
+      </div>
+
+      <!-- 說明文字（移至主視覺上方，避免與生肖圖及文字重疊） -->
+      <div class="game-tagline ">
+        <p>映月恆藏，為您生命中最重要的人客製一份祝福。</p>
+        <p class="tagline-en">
+          Eternal Continuum — A bespoke blessing for the ones you cherish.
+        </p>
+      </div>
+
+      <!-- 主視覺三欄 -->
+      <div class="game-main-row">
+        <!-- 左側：生肖動物插圖
+             src 與 alt 由 JS spinOuter() 動態更新
+             初始值對應 zodiacData[0]（午馬） -->
+        <div class="side-panel side-panel-left">
+          <div
+            class="panel-inner"
+            id="panelLeftInner"
+          >
+            <img
+              class="animal-img"
+              id="animalImg"
+              src="images/06_Animal/20260511_MockupDesign-04.png"
+              alt="午馬"
+            />
+          </div>
+        </div>
+
+        <!-- 中央：轉盤（5 層圖片疊合）
+             圓心校正值設定於 style.css #gL1~#gL5 -->
+        <div class="disk-game-wrap">
+          <div class="disk-stack-container">
+            <img
+              class="disk-layer"
+              id="gL1"
+              src="images/05_Plate_Roll/Layer1.png"
+              alt=""
+            />
+            <img
+              class="disk-layer"
+              id="gL2"
+              src="images/05_Plate_Roll/Layer2.png"
+              alt=""
+            />
+            <img
+              class="disk-layer"
+              id="gL3"
+              src="images/05_Plate_Roll/Layer3.png"
+              alt=""
+            />
+            <img
+              class="disk-layer"
+              id="gL4"
+              src="images/05_Plate_Roll/Layer4.png"
+              alt=""
+            />
+            <img
+              class="disk-layer"
+              id="gL5"
+              src="images/05_Plate_Roll/Layer5.png"
+              alt=""
+            />
+          </div>
+        </div>
+
+        <!-- 右側：生肖大字（天干 + 動物字 + 英文）
+             內容由 JS spinOuter() 動態更新
+             初始值對應 zodiacData[0]（午馬） -->
+        <div class="side-panel side-panel-right">
+          <div
+            class="panel-inner"
+            id="panelRightInner"
+          >
+            <div class="zodiac-right">
+              <span
+                class="zodiac-stem"
+                id="zodiacStem"
+                >午</span
+              >
+              <span
+                class="zodiac-animal"
+                id="zodiacAnimal"
+                >馬</span
+              >
+              <span
+                class="zodiac-large-en en-italic"
+                id="zodiacLargeEn"
+                >Horse</span
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- /.game-main-row -->
+
+      <!-- 手機版專屬：分享給好友（桌機由 CSS 隱藏）
+           點擊呼叫 script.js 的 shareToFriend()：
+             1) 優先使用 navigator.share（手機原生分享面板）
+             2) 不支援則複製分享文字到剪貼簿並顯示 toast -->
+      <button
+        class="btn-game-share"
+        type="button"
+        onclick="shareToFriend()"
+        aria-label="分享你的祝福給好友"
+      >
+        <span class="btn-share-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="18" cy="5" r="2.6"/>
+            <circle cx="6" cy="12" r="2.6"/>
+            <circle cx="18" cy="19" r="2.6"/>
+            <line x1="8.3" y1="10.8" x2="15.7" y2="6.2"/>
+            <line x1="8.3" y1="13.2" x2="15.7" y2="17.8"/>
+          </svg>
+        </span>
+        <span class="btn-share-label">分享你的祝福給好友</span>
+      </button>
+    </section>
+    <!-- /#game -->
+
+    <div class="marquee-strip ">
+      <div class="marquee-track u-bg-gold">
+        <!-- 第一組（原始） -->
+        <span class="zh">映月・恆藏</span><span class="dot">◆</span>
+        <span>Eternal Continuum</span><span class="dot">◆</span>
+        <span class="zh">雙城共啟・洲際在台</span><span class="dot">◆</span>
+        <span>Taipei × Kaohsiung</span><span class="dot">◆</span>
+        <span class="zh">中秋紀念禮盒</span><span class="dot">◆</span>
+        <span>Mid-Autumn 2026 Collection</span><span class="dot">◆</span>
+        <span class="zh">開盒掃碼・解鎖雙城禮遇</span><span class="dot">◆</span>
+        <span>Twin-City Hospitality</span><span class="dot">◆</span>
+        <!-- 第二組（複製，與第一組完全相同，勿修改） -->
+        <span class="zh">映月・恆藏</span><span class="dot">◆</span>
+        <span>Eternal Continuum</span><span class="dot">◆</span>
+        <span class="zh">雙城共啟・洲際在台</span><span class="dot">◆</span>
+        <span>Taipei × Kaohsiung</span><span class="dot">◆</span>
+        <span class="zh">中秋紀念禮盒</span><span class="dot">◆</span>
+        <span>Mid-Autumn 2026 Collection</span><span class="dot">◆</span>
+        <span class="zh">開盒掃碼・解鎖雙城禮遇</span><span class="dot">◆</span>
+        <span>Twin-City Hospitality</span><span class="dot">◆</span>
+      </div>
+    </div>
+
+   
+
+    <!--
+      ══════════════════════════════════════════════════════
+      hero_2B：品牌主視覺文字頁（Brand Statement Hero）
+      ──────────────────────────────────────────────────────
+      中央展示「映月・恆藏 Eternal Continuum」品牌主視覺，
+      搭配雙城紀念禮盒副文案與 CTA。
+      ══════════════════════════════════════════════════════
+    -->
+    <section
+      class="hero-statement"
+      id="statement"
+    > 
+      <img
+            class="statement-visual u-ts-lg"
+            src="images/07_LOGO/Vector Smart Object.png"
+            alt="映月・恆藏 Eternal Continuum 商品主視覺"
+      />
+
+      <div class="statement-frame reveal">
+        <p class="statement-eyebrow">
+          <span class="eyebrow-num">·</span>Mid-Autumn 2026 · Twin Cities Collection
+        </p>
+
+        
+
+        <p class="statement-subtitle">
+          ARTISAN MOONCAKE · TAIPEI &amp; KAOHSIUNG
+        </p>
+
+        <span class="gold-line"></span>
+
+        <p class="statement-desc">
+          高雄洲際酒店 &nbsp;×&nbsp; 台北洲際酒店<br />
+          首款雙城共啟的中秋紀念禮盒，<br />
+          以設計美學、互動禮遇與在地茶藝，<br />
+          將節慶送禮昇華為值得收藏的款待體驗。
+        </p>
+
+        <div class="statement-actions">
+          <a
+            href="#products"
+            class="btn-primary"
+            >立即預訂 &nbsp;·&nbsp; Order Now</a
+          >
+          <a
+            href="#features"
+            class="btn-text"
+            >了解禮盒故事</a
+          >
+        </div>
+         
+      </div>
+    </section>
+
+     <!--
+      ══════════════════════════════════════════════════════
+      hero_2A：純底圖主視覺（Image-only Hero）
+      ──────────────────────────────────────────────────────
+      與 hero_2B 相鄰；本區段僅展示氛圍底圖，不加文字覆層。
+      ══════════════════════════════════════════════════════
+    -->
+    <section
+      class="hero hero-image"
+      id="home"
+    >
+      <img
+        src="images/01_hero/hero_2_hero-bg 2.jpg"
+        alt="映月恆藏 中秋禮盒情境主視覺"
+        class="hero-image-bg"
+      />
+      <span class="scroll-hint">Scroll to explore</span>
+    </section>
+
+    <!--
+      ══════════════════════════════════════════════════════
+      月相裝飾分隔（Hero 2 → Hero 3）
+      ──────────────────────────────────────────────────────
+      由左短線 + 月相小點 + 右短線組成，將節氣意象帶入頁面節奏。
+      ══════════════════════════════════════════════════════
+    -->
+    <div class="section-divider reveal" aria-hidden="true">
+      <span class="divider-line"></span>
+      <div class="moon-phases">
+        <span class="moon crescent"></span>
+        <span class="moon half"></span>
+        <span class="moon full"></span>
+        <span class="moon half"></span>
+        <span class="moon crescent"></span>
+      </div>
+      <span class="divider-line"></span>
+    </div>
+
+    <!--
+      ══════════════════════════════════════════════════════
+      hero_3：月餅展示介紹（靜態，無 Slider）
+      ──────────────────────────────────────────────────────
+      六款月餅圖片橫排展示 + 單一立即購買 CTA。
+      ══════════════════════════════════════════════════════
+    -->
+    <section
+      class="hero3"
+      id="gallery"
+    >
+      <div class="h3-header reveal">
+        <p class="section-eyebrow"><span class="eyebrow-num">01</span>Mooncake Collection</p>
+        <h2 class="section-title">六款匠心<span class="title-divider">·</span>映月精選</h2>
+        <p class="section-desc">
+          以節氣為時、以手藝為心，<br />
+          每一枚月餅承載一段雙城往返的雋永記憶。
+        </p>
+      </div>
+
+      <div class="h3-slider-wrap">
+      <div class="h3-showcase">
+        <article class="h3-item reveal reveal-delay-1">
+          <span class="h3-num">01</span>
+          <div class="h3-img-wrap">
+            <img
+              src="images/03_products/Artboard 1-3.png"
+              alt="蓮蓉蛋黃月餅"
+            />
+          </div>
+          <div class="h3-meta">
+            <p class="h3-name">蓮蓉蛋黃</p>
+            <p class="h3-sub">Lotus &amp; Salted Yolk</p>
+            <p class="h3-tagline">經典原味，鹹甜交織。</p>
+          </div>
+        </article>
+        <article class="h3-item reveal reveal-delay-1">
+          <span class="h3-num">02</span>
+          <div class="h3-img-wrap">
+            <img
+              src="images/03_products/Artboard 1-1.png"
+              alt="紫芋流心月餅"
+            />
+          </div>
+          <div class="h3-meta">
+            <p class="h3-name">紫芋流心</p>
+            <p class="h3-sub">Taro Lava</p>
+            <p class="h3-tagline">紫芋香濃，金沙緩流。</p>
+          </div>
+        </article>
+        <article class="h3-item reveal reveal-delay-2">
+          <span class="h3-num">03</span>
+          <div class="h3-img-wrap">
+            <img
+              src="images/03_products/Artboard 1-5.png"
+              alt="抹茶紅豆月餅"
+            />
+          </div>
+          <div class="h3-meta">
+            <p class="h3-name">抹茶紅豆</p>
+            <p class="h3-sub">Matcha &amp; Azuki</p>
+            <p class="h3-tagline">京都抹茶，餘韻悠長。</p>
+          </div>
+        </article>
+        <article class="h3-item reveal reveal-delay-2">
+          <span class="h3-num">04</span>
+          <div class="h3-img-wrap">
+            <img
+              src="images/03_products/Artboard 1-2.png"
+              alt="棗泥核桃月餅"
+            />
+          </div>
+          <div class="h3-meta">
+            <p class="h3-name">棗泥核桃</p>
+            <p class="h3-sub">Date &amp; Walnut</p>
+            <p class="h3-tagline">沉穩雋永，秋日溫潤。</p>
+          </div>
+        </article>
+        <article class="h3-item reveal reveal-delay-3">
+          <span class="h3-num">05</span>
+          <div class="h3-img-wrap">
+            <img
+              src="images/03_products/Artboard 1.png"
+              alt="廣式奶黃月餅"
+            />
+          </div>
+          <div class="h3-meta">
+            <p class="h3-name">廣式奶黃</p>
+            <p class="h3-sub">Cantonese Custard</p>
+            <p class="h3-tagline">奶香細密，入口即化。</p>
+          </div>
+        </article>
+        <article class="h3-item reveal reveal-delay-3">
+          <span class="h3-num">06</span>
+          <div class="h3-img-wrap">
+            <img
+              src="images/03_products/Artboard 1-4.png"
+              alt="五仁月餅"
+            />
+          </div>
+          <div class="h3-meta">
+            <p class="h3-name">五仁傳統</p>
+            <p class="h3-sub">Five Kernels</p>
+            <p class="h3-tagline">百年配方，匠人之選。</p>
+          </div>
+        </article>
+      </div>
+
+        <!-- 手機版 slider 左右箭頭（桌機自動隱藏，由 CSS 控制） -->
+        <button class="h3-arrow h3-arrow-prev" id="h3Prev" type="button" aria-label="上一款月餅">‹</button>
+        <button class="h3-arrow h3-arrow-next" id="h3Next" type="button" aria-label="下一款月餅">›</button>
+      </div>
+      <!-- /.h3-slider-wrap -->
+
+      <!-- 手機版 slider 圓點指示器 -->
+      <div class="h3-dots" id="h3Dots" aria-label="月餅輪播指示器"></div>
+
+      <div class="h3-cta reveal">
+        <a
+          href="#products"
+          class="btn-primary h3-buy"
+          >立即購買 &nbsp;·&nbsp; Order Now</a
+        >
+      </div>
+    </section>
+
+    <!--
+      ══════════════════════════════════════════════════════
+      跑馬燈（Marquee Strip）
+      ──────────────────────────────────────────────────────
+      文字內容複製兩份以實現無縫循環（translateX -50% 回到起點）。
+      修改文字：兩組內容需保持一致，否則循環接縫會跳動。
+      調整速度：改 style.css .marquee-track animation 的秒數。
+      ══════════════════════════════════════════════════════
+    -->
+    <div class="marquee-strip u-bg-transparent">
+      <div class="marquee-track u-bg-gold">
+        <!-- 第一組（原始） -->
+        <span class="zh">映月・恆藏</span><span class="dot">◆</span>
+        <span>Eternal Continuum</span><span class="dot">◆</span>
+        <span class="zh">雙城共啟・洲際在台</span><span class="dot">◆</span>
+        <span>Taipei × Kaohsiung</span><span class="dot">◆</span>
+        <span class="zh">中秋紀念禮盒</span><span class="dot">◆</span>
+        <span>Mid-Autumn 2026 Collection</span><span class="dot">◆</span>
+        <span class="zh">開盒掃碼・解鎖雙城禮遇</span><span class="dot">◆</span>
+        <span>Twin-City Hospitality</span><span class="dot">◆</span>
+        <!-- 第二組（複製，與第一組完全相同，勿修改） -->
+        <span class="zh">映月・恆藏</span><span class="dot">◆</span>
+        <span>Eternal Continuum</span><span class="dot">◆</span>
+        <span class="zh">雙城共啟・洲際在台</span><span class="dot">◆</span>
+        <span>Taipei × Kaohsiung</span><span class="dot">◆</span>
+        <span class="zh">中秋紀念禮盒</span><span class="dot">◆</span>
+        <span>Mid-Autumn 2026 Collection</span><span class="dot">◆</span>
+        <span class="zh">開盒掃碼・解鎖雙城禮遇</span><span class="dot">◆</span>
+        <span>Twin-City Hospitality</span><span class="dot">◆</span>
+      </div>
+    </div>
+
+    <!--
+      ══════════════════════════════════════════════════════
+      Story：雙城共啟敘事（A New Chapter）
+      ──────────────────────────────────────────────────────
+      呼應映月・恆藏雙城紀念禮盒精神，
+      以三項里程碑展開高雄與台北洲際的合作篇章。
+      ══════════════════════════════════════════════════════
+    -->
+    <section
+      class="story"
+      id="story"
+    >
+      <div class="story-inner">
+        <div class="story-head reveal">
+          <p class="section-eyebrow"><span class="eyebrow-num">02</span>A New Chapter</p>
+          <h2 class="section-title">雙城共啟<br />洲際在台嶄新篇章</h2>
+          <span class="gold-line"></span>
+        </div>
+
+        <div class="story-body reveal reveal-delay-2">
+          <p class="story-lead">
+            2026 中秋，高雄洲際酒店與即將開幕的台北洲際酒店
+            首度攜手，以「<em>映月・恆藏</em>」紀念禮盒，
+            象徵 InterContinental 品牌在台灣的雙城布局新篇章。
+          </p>
+
+          <ul class="story-points">
+            <li>
+              <span class="story-point-num">i</span>
+              <div>
+                <p class="story-point-title">台北開幕里程碑</p>
+                <p class="story-point-desc">
+                  揭開洲際品牌北高雙城新章。
+                </p>
+              </div>
+            </li>
+            <li>
+              <span class="story-point-num">ii</span>
+              <div>
+                <p class="story-point-title">高雄五周年前哨</p>
+                <p class="story-point-desc">
+                  高雄洲際邁向五周年的紀念之作。
+                </p>
+              </div>
+            </li>
+            <li>
+              <span class="story-point-num">iii</span>
+              <div>
+                <p class="story-point-title">首款雙城節慶紀念禮盒</p>
+                <p class="story-point-desc">
+                  兩館聯合監製的中秋限定典藏。
+                </p>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!--
+      ══════════════════════════════════════════════════════
+      Products：產品展示 Slider（6 款口味）
+      ──────────────────────────────────────────────────────
+      結構說明：
+        .products-header  → 標題列（左側標題 + 右側 View All 連結）
+        .pslider-wrap     → Slider 外框（height 由 style.css 控制）
+        .pslider-track    → 水平排列所有 .pslide
+        .pslide           → 單一 slide（左 60% 圖片 + 右 40% 資訊）
+
+      新增口味：
+        1. 複製一個 .pslide 結構並修改圖片/文字
+        2. 更新 script.js 的 pTotal 數值
+        3. 更新每張的 .pslide-counter（例如 07 / 07）
+
+      調整 Slider 高度：改 style.css .pslider-wrap height 的 clamp 值。
+      ══════════════════════════════════════════════════════
+    -->
+
+    <!--
+      ══════════════════════════════════════════════════════
+      Features：品牌承諾（3 欄特色說明）
+      ──────────────────────────────────────────────────────
+      結構說明：
+        左側 .reveal     → 區段標題 + 說明文字
+        右側 .features-grid → 3 個特色項目（含序號、金線、標題、說明）
+
+      新增特色項目：
+        複製一個 .feature-item div，修改序號與文字，
+        並視需要調整 style.css .features-grid 的欄數。
+
+      .reveal / .reveal-delay-x → 滾動進場動畫（詳見 style.css #15）
+      ══════════════════════════════════════════════════════
+    -->
+    <section
+      class="features"
+      id="features"
+    >
+      <div class="features-inner">
+        <!-- 左側說明文字 -->
+        <div class="reveal">
+          <p class="section-eyebrow"><span class="eyebrow-num">03</span>Our Promise</p>
+          <h2 class="section-title">四重承諾<br />映月・恆藏<br />款待之心</h2>
+          <span class="gold-line"></span>
+          <p class="section-desc">
+            從工藝、設計、互動到永續，以雙城洲際的款待哲學，
+            回應您對品質與情感的雙重期待。
+          </p>
+        </div>
+
+        <!-- 右側四重承諾（雙城敘事 4 重點） -->
+        <div class="features-grid features-grid-4">
+          <div class="feature-item reveal reveal-delay-1">
+            <div class="feature-num">01</div>
+            <div class="feature-line"></div>
+            <h3 class="feature-title">雙城共啟・洲際在台</h3>
+            <p class="feature-desc">
+              台北開幕里程碑 × 高雄五周年前哨，
+              首款雙城聯名節慶紀念禮盒。
+            </p>
+          </div>
+          <div class="feature-item reveal reveal-delay-2">
+            <div class="feature-num">02</div>
+            <div class="feature-line"></div>
+            <h3 class="feature-title">以禮傳情・收藏優雅</h3>
+            <p class="feature-desc">
+              洲際黑與淺灰設計，
+              生肖轉盤與祝福文字延伸為數位祝福卡。
+            </p>
+          </div>
+          <div class="feature-item reveal reveal-delay-3">
+            <div class="feature-num">03</div>
+            <div class="feature-line"></div>
+            <h3 class="feature-title">開盒有禮・解鎖旅程</h3>
+            <p class="feature-desc">
+              掃描 QR Code 人人有獎，
+              有機會搶先體驗台北洲際餐飲與住房禮遇。
+            </p>
+          </div>
+          <div class="feature-item reveal reveal-delay-4">
+            <div class="feature-num">04</div>
+            <div class="feature-line"></div>
+            <h3 class="feature-title">台灣風土・延續款待</h3>
+            <p class="feature-desc">
+              在地台灣茶合作，
+              茶葉罐可二次利用，呼應永續與生活美學。
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- /#features -->
+
+    <!-- 月相裝飾分隔（Features → Testimonials） -->
+    <div class="section-divider reveal" aria-hidden="true">
+      <span class="divider-line"></span>
+      <div class="moon-phases">
+        <span class="moon"></span>
+        <span class="moon crescent"></span>
+        <span class="moon full"></span>
+        <span class="moon crescent"></span>
+        <span class="moon"></span>
+      </div>
+      <span class="divider-line"></span>
+    </div>
+
+    <!--
+      ══════════════════════════════════════════════════════
+      Gift 區段（預留位置，尚未建置）
+      ──────────────────────────────────────────────────────
+      CSS 樣式已在 style.css #13 定義完成。
+      需要時在此加入 <section class="gift"> 結構即可使用。
+      ══════════════════════════════════════════════════════
+    -->
+
+    <!--
+      ══════════════════════════════════════════════════════
+      Testimonials：口碑評語（3 欄卡片）
+      ──────────────────────────────────────────────────────
+      新增評語：複製一個 .testimonial-card 結構並修改內容，
+               同時把 style.css .testimonials-grid 的欄數改為對應數量。
+      ══════════════════════════════════════════════════════
+    -->
+    <section
+      class="testimonials"
+      id="testimonials"
+    >
+      <p class="section-eyebrow"><span class="eyebrow-num">04</span>Reviews &amp; Voices</p>
+      <h2 class="section-title reveal">口碑相傳<span class="title-divider">·</span>映月恆藏</h2>
+
+      <div class="testimonials-grid">
+        <!-- 評語卡片 01（內容為情境示意） -->
+        <div class="testimonial-card reveal reveal-delay-1">
+          <span class="testimonial-quote">"</span>
+          <div class="stars">★ ★ ★ ★ ★</div>
+          <p class="testimonial-text">
+            打開禮盒、掃描 QR Code 那一瞬間，竟意外抽到台北洲際的下午茶體驗。中秋從一份月餅，變成一場期待中的雙城之旅。
+          </p>
+          <div class="testimonial-author">
+            <div class="author-name">陳小姐 &nbsp;·&nbsp; 個人贈禮</div>
+            <div class="author-date">情境示意 · Sample</div>
+          </div>
+        </div>
+
+        <!-- 評語卡片 02（內容為情境示意） -->
+        <div class="testimonial-card reveal reveal-delay-2">
+          <span class="testimonial-quote">"</span>
+          <div class="stars">★ ★ ★ ★ ★</div>
+          <p class="testimonial-text">
+            公司今年選用映月・恆藏作為中秋客戶禮。雙城紀念意涵搭配洲際品質，每位收禮的合作夥伴都印象深刻，整體質感令人放心。
+          </p>
+          <div class="testimonial-author">
+            <div class="author-name">林經理 &nbsp;·&nbsp; 企業採購</div>
+            <div class="author-date">情境示意 · Sample</div>
+          </div>
+        </div>
+
+        <!-- 評語卡片 03（內容為情境示意） -->
+        <div class="testimonial-card reveal reveal-delay-3">
+          <span class="testimonial-quote">"</span>
+          <div class="stars">★ ★ ★ ★ ★</div>
+          <p class="testimonial-text">
+            茶葉罐的設計與質感太好了，月餅吃完後我用它收納茶具與小物。是禮盒、是紀念，也是一份能持續陪伴的生活美學。
+          </p>
+          <div class="testimonial-author">
+            <div class="author-name">王小姐 &nbsp;·&nbsp; IHG One Rewards 會員</div>
+            <div class="author-date">情境示意 · Sample</div>
+          </div>
+        </div>
+      </div>
+      <!-- /.testimonials-grid -->
+        <div class="statement-actions u-pt-8">
+          <a
+            href="#products"
+            class="btn-primary u-px-8"
+            >立即預訂<br/> Order Now</a
+          >
+        </div>
+
+     
+    </section>
+    <!-- /#testimonials -->
+
+    <!-- ══════════════════════════════════════════════════
+         頁尾（Site Footer）
+         ── footer-brand  → 品牌名稱與飯店署名
+         ── footer-col    → 聯絡資訊 / 版權說明
+    ══════════════════════════════════════════════════ -->
+    <footer class="site-footer">
+      <div class="footer-inner">
+        <!-- 左欄：品牌 + 高雄洲際完整 LOGO -->
+        <div class="footer-brand-col">
+          <p class="footer-brand-zh">映月・恆藏</p>
+          <p class="footer-brand-hotel">
+            Eternal Continuum &nbsp;·&nbsp; Mid-Autumn 2026
+          </p>
+          <p class="footer-brand-sub en-italic">
+            A Twin-City Hospitality Collection
+          </p>
+          
+        </div>
+
+        <!-- 中欄：高雄洲際聯絡資訊 -->
+        <div class="footer-col">
+          <p class="footer-col-label">高雄洲際酒店</p>
+          <p>InterContinental Kaohsiung</p>
+          <p>高雄市前鎮區成功二路 262 號</p>
+          <p>No. 262, Chenggong 2nd Rd,<br />Qianzhen Dist., Kaohsiung</p>
+        </div>
+
+        <!-- 右欄：雙城合作 + 訂購說明 -->
+        <div class="footer-col">
+          <p class="footer-col-label">雙城合作 · 訂購說明</p>
+          <p>聯名出品 · 台北洲際酒店（即將開幕）</p>
+          <p>中秋限定禮盒 · 歡迎企業採購</p>
+          <p>訂製祝福卡 · 開盒互動禮遇</p>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>
+          Eternal Continuum &nbsp;·&nbsp; Twin-City Mid-Autumn Collection 2026
+        </p>
+        <p>© 2026 InterContinental Hotels Group. All rights reserved.</p>
+      </div>
+    </footer>
+
+    <!--
+      ══════════════════════════════════════════════════════
+      Toast 通知元件
+      ──────────────────────────────────────────────────────
+      由 script.js showToast() 控制顯示與隱藏，無需修改此 HTML。
+      調整樣式：改 style.css .toast 相關屬性。
+      ══════════════════════════════════════════════════════
+    -->
+    <div
+      class="toast"
+      id="toast"
+    ></div>
+
+    <!--
+      ══════════════════════════════════════════════════════
+      全站 JavaScript
+      路徑：js/script.js
+      defer 確保 DOM 完全載入後才執行，避免找不到元素的錯誤。
+      ══════════════════════════════════════════════════════
+    -->
+    <script
+      src="js/script.js"
+      defer
+    ></script>
+  </body>
+</html>
